@@ -1,0 +1,26 @@
+
+body {
+    padding-bottom: 100px;
+}
+
+#application {
+    padding-top: 50px;
+}
+
+video {
+    width: 100%;
+}
+
+.page-index {
+    .clip-list {
+        margin: 0px auto;
+        width: fit-content;
+    }
+}
+
+.page-watch {
+    a.back-link {
+        display: inline-block;
+        margin-bottom: 10px;
+    }
+}

@@ -7,16 +7,28 @@ import React from "react";
 import ClipfaceLayout from "./components/ClipfaceLayout";
 
 const IndexPage = ({ videos }) => {
+  const handleLinkClick = (clipName) => () => {
+    window.location = `/watch/${clipName}`;
+  };
+
   return (
-    <ClipfaceLayout pageName="index">
+    <ClipfaceLayout pageName="index" pageTitle="Tomsan clip folder">
       <div className="clip-list">
-        <ul>
-          {videos.map((name) => (
-            <li key={name}>
-              <a href={"/watch/" + name}>{name}</a>
-            </li>
-          ))}
-        </ul>
+        <table className="table is-fullwidth is-hoverable is-bordered">
+          <thead>
+            <tr>
+              <th>Clip name</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {videos.map((name) => (
+              <tr key={name} onClick={handleLinkClick(name)}>
+                <td>{name}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </ClipfaceLayout>
   );

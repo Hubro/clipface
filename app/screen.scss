@@ -13,8 +13,13 @@ video {
 
 .page-index {
     .clip-list {
-        margin: 0px auto;
-        width: fit-content;
+        .table tbody tr {
+            cursor: pointer;
+
+            &:hover {
+                background-color: #abcdef;
+            }
+        }
     }
 }
 

@@ -18,6 +18,10 @@ const WatchPage = () => {
   const router = useRouter();
   const clipName = router.query.name;
 
+  if (!clipName) {
+    return <div>No clip specified</div>;
+  }
+
   const handleError = (e) => {
     console.log("HANDLING ERROR", e.target.error);
   };

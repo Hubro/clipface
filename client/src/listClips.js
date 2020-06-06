@@ -1,5 +1,5 @@
 /*
- * API endpoint for listing all clips
+ * Lists all clips
  */
 
 import fs from "fs";
@@ -8,10 +8,10 @@ import glob from "glob";
 
 const CLIPS_PATH = process.env.CLIPS_PATH;
 
-export default (req, res) => {
+export default function listClips() {
   const clips = glob.sync(`${CLIPS_PATH}/*.mkv`).sort().reverse();
 
-  const responsePayload = clips.map((filePath) => {
+  return clips.map((filePath) => {
     const stats = fs.statSync(filePath);
 
     return {
@@ -20,6 +20,4 @@ export default (req, res) => {
       saved: stats.mtimeMs,
     };
   });
-
-  res.end(JSON.stringify(responsePayload));
-};
+}

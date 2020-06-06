@@ -52,15 +52,10 @@ const IndexPage = ({ videos }) => {
   );
 };
 
-IndexPage.getInitialProps = async ({ req }) => {
-  const host = req?.headers?.host;
-  const listVideosURL = host
-    ? `http://${host}/api/list-videos`
-    : "/api/list-videos";
+export async function getServerSideProps() {
+  const listClips = require("../listClips").default;
 
-  const videos = await fetch(listVideosURL).then((resp) => resp.json());
-
-  return { videos };
-};
+  return { props: { videos: listClips() } };
+}
 
 export default IndexPage;

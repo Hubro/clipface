@@ -14,17 +14,19 @@ const IndexPage = ({ videos }) => {
   return (
     <ClipfaceLayout pageName="index" pageTitle="Tomsan clip folder">
       <div className="clip-list">
-        <table className="table is-fullwidth is-hoverable is-bordered">
+        <table className="table is-fullwidth is-bordered">
           <thead>
             <tr>
+              <th>Saved</th>
               <th>Clip name</th>
             </tr>
           </thead>
 
           <tbody>
-            {videos.map((name) => (
-              <tr key={name} onClick={handleLinkClick(name)}>
-                <td>{name}</td>
+            {videos.map((info) => (
+              <tr key={info.filename} onClick={handleLinkClick(info.filename)}>
+                <td>{info.saved_relative}</td>
+                <td>{info.filename}</td>
               </tr>
             ))}
           </tbody>
@@ -35,9 +37,7 @@ const IndexPage = ({ videos }) => {
 };
 
 IndexPage.getInitialProps = async () => {
-  let videos = await fetch("/list-videos").then((resp) => resp.json());
-
-  videos = videos.sort().reverse();
+  const videos = await fetch("/list-videos").then((resp) => resp.json());
 
   return { videos };
 };

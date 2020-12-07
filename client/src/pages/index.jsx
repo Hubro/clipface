@@ -2,11 +2,15 @@
  * Index page - shows a list of available clips
  */
 
+import { useEffect, useState } from "react";
 import Router from "next/router";
 import styled from "styled-components";
 import TimeAgo from "react-timeago";
 import prettyBytes from "pretty-bytes";
+import Tippy from "@tippyjs/react";
+import partialRight from "lodash/partialRight";
 
+import { formatClipURL } from "../util";
 import ClipfaceLayout from "../components/ClipfaceLayout";
 
 const LinkRow = styled.tr`
@@ -18,9 +22,42 @@ const LinkRow = styled.tr`
   }
 `;
 
+const CopyLinkButton = styled.button`
+  float: right;
+  margin: -3px;
+`;
+
 const IndexPage = ({ videos }) => {
+  // Used to show a success message on the "Copy link" button
+  const [linkCopied, setLinkCopied] = useState(null);
+
+  useEffect(() => {
+    const hideMessageTimeout = setTimeout(() => {
+      setLinkCopied(null);
+    }, 1000);
+
+    return () => {
+      clearTimeout(hideMessageTimeout);
+    };
+  });
+
   const handleLinkClick = (clipName) => () => {
     Router.push(`/watch/${clipName}`);
+  };
+
+  const handleCopyLinkClick = (e, clipName) => {
+    const button = e.currentTarget;
+
+    navigator.clipboard
+      .writeText(formatClipURL(clipName))
+      .then(() => {
+        setLinkCopied(clipName);
+      })
+      .catch(() => {
+        alert("Failed to copy link!");
+      });
+
+    e.stopPropagation();
   };
 
   return (
@@ -42,7 +79,25 @@ const IndexPage = ({ videos }) => {
                   <TimeAgo date={clip.saved} />
                 </td>
                 <td>{prettyBytes(clip.size)}</td>
-                <td>{clip.name}</td>
+                <td>
+                  {clip.name}
+
+                  <Tippy
+                    content="Link copied!"
+                    animation="shift-away-subtle"
+                    visible={linkCopied == clip.name}
+                  >
+                    <CopyLinkButton
+                      className="button is-small"
+                      title="Copy link to clip"
+                      onClick={partialRight(handleCopyLinkClick, clip.name)}
+                    >
+                      <span className="icon is-small">
+                        <i className="fas fa-link"></i>
+                      </span>
+                    </CopyLinkButton>
+                  </Tippy>
+                </td>
               </LinkRow>
             ))}
           </tbody>

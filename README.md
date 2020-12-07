@@ -19,7 +19,7 @@ Simple, self hosted clip sharing application.
 
 - User interface improvements
 
-  - Copy link to clip
+  - **(DONE)** Copy link to clip
 
     Should be available both in the clip viewer and the clip list
 

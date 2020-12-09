@@ -23,7 +23,7 @@ Simple, self hosted clip sharing application.
 
     Should be available both in the clip viewer and the clip list
 
-  - Clip searching
+  - **(DONE)** Clip searching
 
     A filter box at the top of the clip list should filter out any clips
     that don't match the input.

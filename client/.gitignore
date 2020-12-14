@@ -1,4 +1,8 @@
-yarn.lock
 
+# Local config file
+/clipface.toml
+
+# Auto-generated files and directories
+/yarn.lock
 /node_modules/
 /.next/

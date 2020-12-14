@@ -134,10 +134,18 @@ const IndexPage = ({ videos }) => {
   );
 };
 
-export async function getServerSideProps() {
-  const listClips = require("../listClips").default;
+export async function getServerSideProps(context) {
+  const { checkAuth } = require("../backend/auth");
 
-  return { props: { videos: listClips() } };
+  let videos = [];
+
+  if (await checkAuth(context.req)) {
+    const listClips = require("../backend/listClips").default;
+
+    videos = listClips();
+  }
+
+  return { props: { videos } };
 }
 
 export default IndexPage;

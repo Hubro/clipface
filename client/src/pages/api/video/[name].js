@@ -2,19 +2,17 @@
  * API route for downloading clips by name
  */
 
-import path from "path";
 import fs from "fs";
+import path from "path";
+
 import { serveStatic } from "next/dist/next-server/server/serve-static";
 
-const CLIPS_PATH = process.env.CLIPS_PATH;
+import { useAuth } from "../../../backend/auth";
+import { getClipsPath } from "../../../backend/config";
 
-if (CLIPS_PATH === undefined) {
-  throw "CLIPS_PATH must be defined";
-}
-
-export default (req, res) => {
+export default useAuth((req, res) => {
   const name = req.query.name;
-  const clipPath = path.join(CLIPS_PATH, name);
+  const clipPath = path.join(getClipsPath(), name);
 
   if (!fs.existsSync(clipPath)) {
     res.statusCode = 404;
@@ -23,4 +21,4 @@ export default (req, res) => {
   }
 
   serveStatic(req, res, clipPath);
-};
+});

@@ -2,7 +2,6 @@
  * Watch page - this is where the video is displayed
  */
 
-import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import styled from "styled-components";

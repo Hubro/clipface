@@ -20,13 +20,13 @@ class MyDocument extends Document {
             rel="stylesheet"
             href="https://unpkg.com/tippy.js@6.2.7/dist/tippy.css"
             integrity="sha384-PmtXKEojFmNYlbhaz10b4YWCrwaniEa4hKxO7LkGAAzL/61Phd7ZkcM115K0ajRN"
-            crossorigin="anonymous"
+            crossOrigin="anonymous"
           ></link>
           <link
             rel="stylesheet"
             href="https://unpkg.com/tippy.js@6.2.7/animations/shift-away-subtle.css"
             integrity="sha384-EW4QQ6r6xudVV1aSikRTm20kG3Rs0SqQMdtWh59xU7JvmZC1Ex/F7+sRNUq8Du67"
-            crossorigin="anonymous"
+            crossOrigin="anonymous"
           />
           <link
             rel="stylesheet"

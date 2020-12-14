@@ -6,13 +6,13 @@ Simple, self hosted clip sharing application.
 
 ### Version 1.0
 
-- Config file
+- **(DONE)** Config file
 
   Some upcoming features will require configuration, so Clipface needs to be
   able to load information from a config file and make it available to both
   the front-end and back-end of the application.
 
-- Authentication
+- **(DONE)** Authentication
 
   The ability to password protect the application. This should be a simple
   password popup.

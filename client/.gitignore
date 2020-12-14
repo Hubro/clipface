@@ -4,5 +4,5 @@
 
 # Auto-generated files and directories
 /yarn.lock
-/node_modules/
-/.next/
+/node_modules
+/.next

@@ -8,8 +8,6 @@ import { getUserPassword, getSecureCookies } from "../../backend/config";
 import { hashPassword } from "../../backend/auth";
 
 export default function login(req, res) {
-  console.log("Request body", req.body);
-
   // Only POST is allowed on this route
   if (req.method != "POST") {
     res.statusCode = 405;

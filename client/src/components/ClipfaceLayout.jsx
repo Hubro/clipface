@@ -2,7 +2,11 @@
  * The base layout of the application
  */
 
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
+
+import checkLogin from "../checkLogin";
 
 const ApplicationDiv = styled.div`
   padding-top: 50px;
@@ -15,11 +19,35 @@ export default ({
   pageTitle = null,
   pageSubtitle = null,
 }) => {
+  const router = useRouter();
+
+  // When set to true, a "Log out" button will be displayed
+  const [showLogoutButton, setShowLogoutButton] = useState(false);
+
+  useEffect(() => {
+    if (!window.location.pathname.startsWith("/login")) {
+      // TODO: Fetch this value from state when proper state management
+      checkLogin().then((loginStatus) => {
+        setShowLogoutButton(loginStatus["status"] != "NO_AUTHENTICATION");
+      });
+    }
+  });
+
   const contentClassNames = ["container"];
 
   if (pageName) {
     contentClassNames.push(`page-${pageName}`);
   }
+
+  const onSignOut = () => {
+    logout().then((ok) => {
+      if (ok) {
+        router.push("/login");
+      } else {
+        alert("Failed to log out, please check your network connection");
+      }
+    });
+  };
 
   return (
     <>
@@ -34,9 +62,11 @@ export default ({
               </div>
               <div className="navbar-menu">
                 <div className="navbar-end">
-                  <a className="navbar-item is-active" href="/">
-                    Tomsan clip folder
-                  </a>
+                  {showLogoutButton && (
+                    <a className="navbar-item is-active" onClick={onSignOut}>
+                      Log out
+                    </a>
+                  )}
                 </div>
               </div>
             </div>
@@ -60,3 +90,17 @@ export default ({
     </>
   );
 };
+
+/**
+ * Logs out through the API
+ */
+async function logout() {
+  const response = await fetch("/api/logout", { method: "POST" });
+
+  if (response.ok) {
+    return true;
+  }
+
+  console.error("Failed to log out", response);
+  return false;
+}

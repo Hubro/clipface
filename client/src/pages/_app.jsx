@@ -11,7 +11,7 @@ function MyApp({ Component, pageProps }) {
 
   if (typeof window !== "undefined") {
     checkLogin().then((response) => {
-      if (response["status"] != "AUTHENTICATED") {
+      if (response["status"] == "NOT_AUTHENTICATED") {
         // Don't redirect if we are on the login page
         if (window.location.pathname.startsWith("/login")) {
           return;

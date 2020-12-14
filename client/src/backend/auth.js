@@ -21,14 +21,12 @@ export function useAuth(handler) {
   const userPassword = getUserPassword();
 
   const wrapper = async (req, res) => {
-    if (userPassword) {
-      if (await checkAuth(req)) {
-        return handler(req, res);
-      } else {
-        res.statusCode = 401;
-        res.end();
-        return;
-      }
+    if (await checkAuth(req)) {
+      return handler(req, res);
+    } else {
+      res.statusCode = 401;
+      res.end();
+      return;
     }
   };
 
@@ -54,6 +52,13 @@ export async function checkAuth(req) {
 
     return cookie.parse(rawCookie)["auth"] || null;
   };
+
+  const userPassword = getUserPassword();
+
+  // Always succeed auth check when no user authentication has been configured
+  if (!userPassword) {
+    return true;
+  }
 
   const authToken = getAuthToken();
 

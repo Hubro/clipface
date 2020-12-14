@@ -2,10 +2,10 @@
  * Login page
  */
 
-import { route } from "next/dist/next-server/server/router";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
+import checkLogin from "../checkLogin";
 
 import ClipfaceLayout from "../components/ClipfaceLayout";
 
@@ -35,6 +35,21 @@ const LoginPage = () => {
     passwordFieldRef.current.focus();
   });
 
+  // If the user is already authenticated, this block forwards the user to the
+  // next page
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      // TODO: Use local state management rather than re-checking login status
+      checkLogin().then((response) => {
+        if (response["status"] != "NOT_AUTHENTICATED") {
+          router.push(next);
+        }
+      });
+    }
+  });
+
+  const next = "next" in router.query ? router.query["next"] : "/";
+
   const onPasswordChange = (e) => {
     setPassword(e.target.value);
   };
@@ -45,8 +60,6 @@ const LoginPage = () => {
     setIsLoading(true);
 
     console.log("Logging in with password", password);
-
-    const next = "next" in router.query ? router.query["next"] : "/";
 
     login(password)
       .then((loggedIn) => {

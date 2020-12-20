@@ -11,6 +11,7 @@ import checkLogin from "../checkLogin";
 const ApplicationDiv = styled.div`
   padding-top: 50px;
   padding-bottom: 50px;
+  position: static;
 `;
 
 export default ({

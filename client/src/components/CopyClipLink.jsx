@@ -4,8 +4,6 @@
 
 import PropTypes from "prop-types";
 import Tippy from "@tippyjs/react";
-import partialRight from "lodash/partialRight";
-import styled from "styled-components";
 
 import { formatClipURL } from "../util";
 import { useEffect, useState } from "react";

@@ -75,7 +75,7 @@ const WatchPage = () => {
     src: "/api/video/" + clipName,
     controls: true,
     autoPlay: true,
-    onError: { handleError },
+    onError: handleError,
     style: { outline: "none" },
   };
 

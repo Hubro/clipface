@@ -2,13 +2,13 @@
  * Watch page - this is where the video is displayed
  */
 
-import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import styled from "styled-components";
 
 import ClipfaceLayout from "../../components/ClipfaceLayout";
 import CopyClipLink from "../../components/CopyClipLink";
+import useLocalSettings from "../../localSettings";
 
 const ButtonRow = styled.div`
   display: flex;
@@ -30,11 +30,11 @@ const BackLink = styled.a`
 `;
 
 const VideoContainer = styled.div`
-  background-color: black;
   margin: 0px auto;
   max-width: 1344px;
 
-  &.theatre-mode {
+  &.theater-mode {
+    background-color: black;
     position: absolute;
     left: 0px;
     right: 0px;
@@ -51,8 +51,10 @@ const VideoContainer = styled.div`
 
 const WatchPage = () => {
   const router = useRouter();
-  const [theatreMode, setTheatreMode] = useState(false);
+  const [localSettings, setLocalSettings] = useLocalSettings();
   const clipName = router.query.name;
+
+  const theaterMode = localSettings.theaterMode;
 
   if (!clipName) {
     return <div>No clip specified</div>;
@@ -62,11 +64,19 @@ const WatchPage = () => {
     console.log("HANDLING ERROR", e.target.error);
   };
 
+  const toggletheaterMode = () => {
+    setLocalSettings({
+      ...localSettings,
+      theaterMode: !localSettings.theaterMode,
+    });
+  };
+
   const videoProps = {
     src: "/api/video/" + clipName,
     controls: true,
     autoPlay: true,
     onError: { handleError },
+    style: { outline: "none" },
   };
 
   return (
@@ -85,13 +95,13 @@ const WatchPage = () => {
           <ButtonRowSpacer />
 
           <button
-            className={"button is-small " + (theatreMode ? "is-info" : "")}
-            onClick={() => setTheatreMode(!theatreMode)}
+            className={"button is-small " + (theaterMode ? "is-info" : "")}
+            onClick={toggletheaterMode}
           >
             <span className="icon is-small">
-              <i class="fas fa-film"></i>
+              <i className="fas fa-film"></i>
             </span>
-            <span>Theatre mode</span>
+            <span>Theater mode</span>
           </button>
 
           <ButtonRowSeparator />
@@ -99,7 +109,7 @@ const WatchPage = () => {
           <CopyClipLink clipName={clipName} />
         </ButtonRow>
 
-        <VideoContainer className={theatreMode ? "theatre-mode" : ""}>
+        <VideoContainer className={theaterMode ? "theater-mode" : ""}>
           <video {...videoProps} />
         </VideoContainer>
       </ClipfaceLayout>

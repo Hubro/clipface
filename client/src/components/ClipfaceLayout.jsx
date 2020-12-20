@@ -64,7 +64,7 @@ export default ({
               <div className="navbar-menu">
                 <div className="navbar-end">
                   {showLogoutButton && (
-                    <a className="navbar-item is-active" onClick={onSignOut}>
+                    <a className="navbar-item" onClick={onSignOut}>
                       Log out
                     </a>
                   )}

@@ -28,7 +28,7 @@ Simple, self hosted clip sharing application.
     A filter box at the top of the clip list should filter out any clips
     that don't match the input.
 
-  - "Cinema mode"
+  - **(DONE)** "Cinema mode"
 
     Let the clip cover the entire width and/or height of the browser,
     instead of limiting the width. The preference should be saved in local

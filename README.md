@@ -39,6 +39,10 @@ Simple, self hosted clip sharing application.
     It's currently hard coded to "Tomsan clip folder", not really applicable
     for most people
 
+- Deploy Docker image to Docker Hub for easier deployment
+
+- Add usage instructions to this README!
+
 - **(Maybe)** Add a clip length column to clip table
 
   This would be nice to have, but could be bad for application performance

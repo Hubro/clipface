@@ -21,8 +21,8 @@ RUN rm -rf /app/node_modules \
 
 ENV NODE_ENV production
 ENV PORT 80
-ENV CLIPS_PATH=/clips
 EXPOSE 80
 VOLUME /clips
+VOLUME /config
 
 CMD yarn start -p ${PORT}

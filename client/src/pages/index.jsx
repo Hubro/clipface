@@ -31,7 +31,7 @@ const CopyLinkButton = styled(CopyClipLink)`
   margin: -3px;
 `;
 
-const IndexPage = ({ videos }) => {
+const IndexPage = ({ videos, title }) => {
   const [filter, setFilter] = useState("");
   const filterBox = useRef();
 
@@ -74,7 +74,7 @@ const IndexPage = ({ videos }) => {
   };
 
   return (
-    <ClipfaceLayout pageName="index" pageTitle="Tomsan clip folder">
+    <ClipfaceLayout pageName="index" pageTitle={title}>
       <div>
         <div className="field">
           <label className="label">Filter</label>
@@ -136,6 +136,7 @@ const IndexPage = ({ videos }) => {
 
 export async function getServerSideProps(context) {
   const { checkAuth } = require("../backend/auth");
+  const { getClipsPageTitle } = require("../backend/config");
 
   let videos = [];
 
@@ -145,7 +146,7 @@ export async function getServerSideProps(context) {
     videos = listClips();
   }
 
-  return { props: { videos } };
+  return { props: { videos, title: getClipsPageTitle() } };
 }
 
 export default IndexPage;

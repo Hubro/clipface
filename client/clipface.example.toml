@@ -21,3 +21,10 @@
 # false.
 #
 # secure_cookies = true
+
+# Title displayed on the clip list page
+#
+# If not set (which is the default), no title will be displayed and the header
+# will be significantly smaller.
+#
+# clips_page_title =

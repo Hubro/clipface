@@ -55,6 +55,17 @@ export function getSecureCookies() {
 }
 
 /**
+ * Returns the clips page title option, defaults to null
+ *
+ * @returns {string|null}
+ */
+export function getClipsPageTitle() {
+  const config = getConfig();
+
+  return config["clips_page_title"] || null;
+}
+
+/**
  * Returns the config file as an object, loads it from disk if necessary
  *
  * @return {object}

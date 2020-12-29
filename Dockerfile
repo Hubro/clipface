@@ -1,24 +1,18 @@
 FROM node:alpine
 
-# Dependencies
-
-#RUN apk update && apk upgrade \
-#    && apk add --no-cache ...
-#    && rm -rf /var/cache/apk/*
-
-#RUN npm install --quiet --no-progress --unsafe-perm -g yarn
-
 # App setup
 
-ADD client /app
+COPY client/.next/ /app/.next/
+COPY client/package.json /app/
+COPY client/yarn.lock /app/
+
 WORKDIR /app
 
-RUN rm -rf /app/node_modules \
-  && yarn \
-  && yarn build
+RUN yarn --prod
 
 # Configuration
 
+ENV CLIPFACE_CONFIG=/config/clipface.toml
 ENV NODE_ENV production
 ENV PORT 80
 EXPOSE 80

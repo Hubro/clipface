@@ -2,6 +2,58 @@
 
 Simple, self hosted clip sharing application.
 
+## Usage with Docker
+
+First of all pull the Docker image:
+
+```
+$ docker pull tomsan/clipface
+```
+
+Very simple usage, no authentication, port 80:
+
+```
+docker run -d \
+  --name clipface \
+  -v /host/path/to/clips:/clips \
+  -p 80:80 \
+  tomsan/clipface:latest
+```
+
+For more advanced usage, you need to add a config file. Create the file
+"clipface.toml" on your host machine and add the content from
+[clipface.toml.example][1].
+
+[1]: https://raw.githubusercontent.com/Hubro/clipface/master/client/clipface.example.toml
+
+Map the config file to `/config/clipface.toml` inside the Docker container,
+for example:
+
+```
+docker run -d \
+  --name clipface \
+  -v /host/path/to/clips:/clips \
+  -v /host/path/to/clipface.toml:/config/clipface.toml \
+  -p 80:80 \
+  tomsan/clipface:latest
+```
+
+### Authentication
+
+Clipface supports simple password authentication by setting the
+`user_password` option in the config file. This will redirect users to a
+login screen where the configured password must be entered before the user
+can proceed.
+
+For security reasons, the hashed password is stored in a HTTP-only cookie.
+Clipface assumes (again for security reasons) that you will be running it
+behind a reverse proxy with SSL enabled, so the "secure_cookies" config
+option defaults to `true`. This means that the authentication cookie is
+created with the "secure" flag, which means it will only be transferred when
+the HTTPS protocol is used. If you are running Clipface without SSL, you
+should set the "secure_cookies" option to `false` in the config file,
+otherwise authentication will not work.
+
 ## Roadmap
 
 ### Version 1.0
@@ -34,20 +86,14 @@ Simple, self hosted clip sharing application.
     instead of limiting the width. The preference should be saved in local
     storage.
 
-  - Make page title of clip list page configurable
+  - **(DONE)** Make page title of clip list page configurable
 
     It's currently hard coded to "Tomsan clip folder", not really applicable
     for most people
 
-- Deploy Docker image to Docker Hub for easier deployment
+- **(DONE)** Deploy Docker image to Docker Hub for easier deployment
 
-- Add usage instructions to this README!
-
-- **(Maybe)** Add a clip length column to clip table
-
-  This would be nice to have, but could be bad for application performance
-  and require some kind of caching, we'll see. Can be done with ffprobe
-  through for example the [node-ffprobe library][1].
+- **(DONE)** Add usage instructions to this README!
 
 ### Version 2.0
 
@@ -57,7 +103,6 @@ Simple, self hosted clip sharing application.
   privileges.
 
 - Admin actions - Should be available only while authenticated as admin
-
   - Upload clip (with drag-and-drop)
   - Rename clip
   - Delete clip
@@ -66,6 +111,12 @@ Simple, self hosted clip sharing application.
   - Clip title
   - Clip description
   - Cached clip length?
+
+- **(Maybe)** Add a clip length column to clip table
+
+  This would be nice to have, but could be bad for application performance
+  and require some kind of caching, we'll see. Can be done with ffprobe
+  through for example the [node-ffprobe library][1].
 
 ## Authentication
 

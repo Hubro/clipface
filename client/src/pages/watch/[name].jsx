@@ -136,8 +136,8 @@ const WatchPage = ({ clipMeta }) => {
         {theaterMode && <VideoSpacer />}
 
         <VideoInfo>
-          <h1 className="title">{clipMeta.title || clipMeta.name}</h1>
-          <h2 className="subtitle">
+          <h1 className="title is-4">{clipMeta.title || clipMeta.name}</h1>
+          <h2 className="subtitle is-6">
             Saved <TimeAgo date={clipMeta.saved} />
             <span style={{ margin: "0px 10px" }}>•</span>
             {prettyBytes(clipMeta.size)}

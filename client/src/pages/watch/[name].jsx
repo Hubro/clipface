@@ -162,7 +162,7 @@ export async function getServerSideProps(context) {
   const { checkAuth } = require("../../backend/auth");
   const getMeta = require("../../backend/getMeta").default;
 
-  if (await checkAuth(context)) {
+  if (await checkAuth(context.req)) {
     const clipName = context.query.name;
     const clipMeta = getMeta(clipName);
 

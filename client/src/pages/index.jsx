@@ -120,7 +120,7 @@ const IndexPage = ({ videos, title }) => {
                     </td>
                     <td>{prettyBytes(clip.size)}</td>
                     <td>
-                      {clip.name}
+                      {clip.title || clip.name}
 
                       <CopyLinkButton clipName={clip.name} noText />
                     </td>

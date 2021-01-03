@@ -5,6 +5,9 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
 import styled from "styled-components";
+import TimeAgo from "react-timeago";
+import prettyBytes from "pretty-bytes";
+import ReactMarkdown from "react-markdown";
 
 import ClipfaceLayout from "../../components/ClipfaceLayout";
 import CopyClipLink from "../../components/CopyClipLink";
@@ -29,6 +32,9 @@ const BackLink = styled.a`
   margin-bottom: 10px;
 `;
 
+// The height of the video container when in theatre mode
+const videoContainerTheatreHeight = "calc(100vh - 136px - 150px)";
+
 const VideoContainer = styled.div`
   margin: 0px auto;
   max-width: 1344px;
@@ -40,7 +46,7 @@ const VideoContainer = styled.div`
     right: 0px;
     max-width: initial;
     margin: 0px;
-    height: calc(100vh - 136px);
+    height: ${videoContainerTheatreHeight};
 
     & video {
       width: 100%;
@@ -49,7 +55,21 @@ const VideoContainer = styled.div`
   }
 `;
 
-const WatchPage = () => {
+// Spacer to push the contents behind the video container down
+const VideoSpacer = styled.div`
+  height: ${videoContainerTheatreHeight};
+`;
+
+const VideoInfo = styled.div`
+  margin-top: 25px;
+  padding-bottom: 50px;
+`;
+
+const VideoDescription = styled.div`
+  margin-top: 25px;
+`;
+
+const WatchPage = ({ clipMeta }) => {
   const router = useRouter();
   const [localSettings, setLocalSettings] = useLocalSettings();
   const clipName = router.query.name;
@@ -112,9 +132,50 @@ const WatchPage = () => {
         <VideoContainer className={theaterMode ? "theater-mode" : ""}>
           <video {...videoProps} />
         </VideoContainer>
+
+        {theaterMode && <VideoSpacer />}
+
+        <VideoInfo>
+          <h1 className="title">{clipMeta.title || clipMeta.name}</h1>
+          <h2 className="subtitle">
+            Saved <TimeAgo date={clipMeta.saved} />
+            <span style={{ margin: "0px 10px" }}>•</span>
+            {prettyBytes(clipMeta.size)}
+          </h2>
+
+          {clipMeta.title && <em>Filename: {clipMeta.name}</em>}
+
+          <hr />
+
+          {clipMeta.description && (
+            <VideoDescription className="content">
+              <ReactMarkdown>{clipMeta.description}</ReactMarkdown>
+            </VideoDescription>
+          )}
+        </VideoInfo>
       </ClipfaceLayout>
     </>
   );
 };
+
+export async function getServerSideProps(context) {
+  const { checkAuth } = require("../../backend/auth");
+  const getMeta = require("../../backend/getMeta").default;
+
+  if (await checkAuth(context)) {
+    const clipName = context.query.name;
+    const clipMeta = getMeta(clipName);
+
+    console.log("Clip metadata:", clipMeta);
+
+    return {
+      props: { clipMeta },
+    };
+  } else {
+    return {
+      props: {},
+    };
+  }
+}
 
 export default WatchPage;

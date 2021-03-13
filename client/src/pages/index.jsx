@@ -11,6 +11,7 @@ import debounce from "lodash/debounce";
 
 import ClipfaceLayout from "../components/ClipfaceLayout";
 import CopyClipLink from "../components/CopyClipLink";
+import requireAuth from "../requireAuth";
 
 const ClearFilterButton = styled.span`
   cursor: pointer;
@@ -134,7 +135,7 @@ const IndexPage = ({ videos, title }) => {
   );
 };
 
-export async function getServerSideProps(context) {
+export const getServerSideProps = requireAuth(async (context) => {
   const { checkAuth } = require("../backend/auth");
   const { getClipsPageTitle } = require("../backend/config");
 
@@ -147,6 +148,6 @@ export async function getServerSideProps(context) {
   }
 
   return { props: { videos, title: getClipsPageTitle() } };
-}
+});
 
 export default IndexPage;

@@ -12,6 +12,7 @@ import ReactMarkdown from "react-markdown";
 import ClipfaceLayout from "../../components/ClipfaceLayout";
 import CopyClipLink from "../../components/CopyClipLink";
 import useLocalSettings from "../../localSettings";
+import requireAuth from "../../requireAuth";
 
 const ButtonRow = styled.div`
   display: flex;
@@ -158,7 +159,7 @@ const WatchPage = ({ clipMeta }) => {
   );
 };
 
-export async function getServerSideProps(context) {
+export const getServerSideProps = requireAuth(async (context) => {
   const { checkAuth } = require("../../backend/auth");
   const getMeta = require("../../backend/getMeta").default;
 
@@ -176,6 +177,6 @@ export async function getServerSideProps(context) {
       props: {},
     };
   }
-}
+});
 
 export default WatchPage;

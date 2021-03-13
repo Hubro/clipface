@@ -14,7 +14,7 @@ let CONFIG = null;
  *
  * If null is returned, authentication has not been configured.
  *
- * @returns {(string|null)}
+ * @returns {string|null}
  */
 export function getUserPassword() {
   const config = getConfig();

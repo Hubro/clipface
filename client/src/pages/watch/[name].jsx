@@ -124,7 +124,7 @@ const WatchPage = ({ clipMeta, authInfo }) => {
 
   return (
     <>
-      <ClipfaceLayout pageName="watch">
+      <ClipfaceLayout authInfo={authInfo} pageName="watch">
         <ButtonRow>
           {/* Only show "Back to clips" button to authenticated users */}
           {authInfo.status == "AUTHENTICATED" && (

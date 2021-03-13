@@ -42,7 +42,7 @@ const RowButtons = styled.div`
   }
 `;
 
-const IndexPage = ({ videos, title }) => {
+const IndexPage = ({ videos, title, authInfo }) => {
   const [filter, setFilter] = useState("");
   const filterBox = useRef();
 
@@ -85,7 +85,7 @@ const IndexPage = ({ videos, title }) => {
   };
 
   return (
-    <ClipfaceLayout pageName="index" pageTitle={title}>
+    <ClipfaceLayout authInfo={authInfo} pageName="index" pageTitle={title}>
       <div>
         <div className="field">
           <label className="label">Filter</label>

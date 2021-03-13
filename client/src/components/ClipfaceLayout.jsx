@@ -3,10 +3,7 @@
  */
 
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
 import styled from "styled-components";
-
-import checkLogin from "../checkLogin";
 
 const ApplicationDiv = styled.div`
   padding-top: 50px;
@@ -16,24 +13,12 @@ const ApplicationDiv = styled.div`
 
 export function ClipfaceLayout({
   children,
+  authInfo = { status: "NOT_AUTHENTICATED" },
   pageName = null,
   pageTitle = null,
   pageSubtitle = null,
 }) {
   const router = useRouter();
-
-  // When set to true, a "Log out" button will be displayed
-  const [showLogoutButton, setShowLogoutButton] = useState(false);
-
-  useEffect(() => {
-    if (!window.location.pathname.startsWith("/login")) {
-      // TODO: Fetch this value from state when proper state management
-      checkLogin().then((loginStatus) => {
-        setShowLogoutButton(loginStatus["status"] != "NO_AUTHENTICATION");
-      });
-    }
-  });
-
   const contentClassNames = ["container"];
 
   if (pageName) {
@@ -63,7 +48,7 @@ export function ClipfaceLayout({
               </div>
               <div className="navbar-menu">
                 <div className="navbar-end">
-                  {showLogoutButton && (
+                  {authInfo.status == "AUTHENTICATED" && (
                     <a className="navbar-item" onClick={onSignOut}>
                       Log out
                     </a>

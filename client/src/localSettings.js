@@ -34,6 +34,7 @@ const updateSettings = (settings) => {
 // Sets default values for missing local settings
 const initLocalSettings = () => {
   if (!globalSettings.theaterMode) globalSettings.theaterMode = false;
+  if (!globalSettings.videoVolume) globalSettings.videoVolume = 1;
 
   saveLocalSettings();
 };

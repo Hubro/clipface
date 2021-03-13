@@ -12,7 +12,7 @@ import ClipfaceLayout from "../../components/ClipfaceLayout";
 import CopyClipLink from "../../components/CopyClipLink";
 import useLocalSettings from "../../localSettings";
 import requireAuth from "../../backend/requireAuth";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 
 const ButtonRow = styled.div`
   display: flex;
@@ -84,8 +84,14 @@ const WatchPage = ({ clipMeta, authInfo }) => {
   const router = useRouter();
   const videoRef = useRef();
   const [localSettings, setLocalSettings] = useLocalSettings();
-  const clipName = router.query.name;
 
+  // The video volume can't be set directly on the element for some reason, so
+  // we set it immediately after rendering
+  useEffect(() => {
+    videoRef.current.volume = localSettings.videoVolume;
+  });
+
+  const clipName = router.query.name;
   const theaterMode = localSettings.theaterMode;
 
   if (!clipName) {
@@ -102,11 +108,18 @@ const WatchPage = ({ clipMeta, authInfo }) => {
     router.push("/");
   };
 
-  const handleError = (e) => {
-    console.log("HANDLING ERROR", e.target.error);
+  const handleVideoError = (e) => {
+    console.log("VIDEO ERROR", e.target.error);
   };
 
-  const toggletheaterMode = () => {
+  const handleVolumeChange = (e) => {
+    setLocalSettings({
+      ...localSettings,
+      videoVolume: videoRef.current.volume,
+    });
+  };
+
+  const toggleTheaterMode = () => {
     setLocalSettings({
       ...localSettings,
       theaterMode: !localSettings.theaterMode,
@@ -125,7 +138,8 @@ const WatchPage = ({ clipMeta, authInfo }) => {
     src: videoSrc,
     controls: true,
     autoPlay: true,
-    onError: handleError,
+    onError: handleVideoError,
+    onVolumeChange: handleVolumeChange,
     style: { outline: "none" },
     ref: videoRef,
   };
@@ -155,7 +169,7 @@ const WatchPage = ({ clipMeta, authInfo }) => {
 
           <button
             className={"button is-small " + (theaterMode ? "is-info" : "")}
-            onClick={toggletheaterMode}
+            onClick={toggleTheaterMode}
           >
             <span className="icon is-small">
               <i className="fas fa-film"></i>

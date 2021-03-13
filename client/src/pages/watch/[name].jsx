@@ -2,7 +2,6 @@
  * Watch page - this is where the video is displayed
  */
 
-import Link from "next/link";
 import { useRouter } from "next/router";
 import styled from "styled-components";
 import TimeAgo from "react-timeago";
@@ -13,6 +12,7 @@ import ClipfaceLayout from "../../components/ClipfaceLayout";
 import CopyClipLink from "../../components/CopyClipLink";
 import useLocalSettings from "../../localSettings";
 import requireAuth from "../../backend/requireAuth";
+import { useRef } from "react";
 
 const ButtonRow = styled.div`
   display: flex;
@@ -82,6 +82,7 @@ const VideoDescription = styled.div`
 
 const WatchPage = ({ clipMeta, authInfo }) => {
   const router = useRouter();
+  const videoRef = useRef();
   const [localSettings, setLocalSettings] = useLocalSettings();
   const clipName = router.query.name;
 
@@ -94,6 +95,12 @@ const WatchPage = ({ clipMeta, authInfo }) => {
   if (!clipMeta) {
     return <div>Clip doesn't exist</div>;
   }
+
+  const handleBackClick = () => {
+    videoRef.current.pause();
+
+    router.push("/");
+  };
 
   const handleError = (e) => {
     console.log("HANDLING ERROR", e.target.error);
@@ -120,6 +127,7 @@ const WatchPage = ({ clipMeta, authInfo }) => {
     autoPlay: true,
     onError: handleError,
     style: { outline: "none" },
+    ref: videoRef,
   };
 
   return (
@@ -128,14 +136,12 @@ const WatchPage = ({ clipMeta, authInfo }) => {
         <ButtonRow>
           {/* Only show "Back to clips" button to authenticated users */}
           {authInfo.status == "AUTHENTICATED" && (
-            <Link href="/">
-              <BackLink>
-                <span className="icon">
-                  <i className="fas fa-arrow-alt-circle-left"></i>
-                </span>
-                Back to clips
-              </BackLink>
-            </Link>
+            <BackLink onClick={handleBackClick}>
+              <span className="icon">
+                <i className="fas fa-arrow-alt-circle-left"></i>
+              </span>
+              Back to clips
+            </BackLink>
           )}
 
           {authInfo.status == "SINGLE_PAGE_AUTHENTICATED" && (

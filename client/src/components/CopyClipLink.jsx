@@ -7,11 +7,7 @@ import Tippy from "@tippyjs/react";
 
 import { formatClipURL } from "../util";
 import { useEffect, useState } from "react";
-
-// const CopyLinkButton = styled.button`
-//   float: right;
-//   margin: -3px;
-// `;
+import createSingleClipToken from "../createSingleClipToken";
 
 export default function CopyClipLink(props) {
   const [linkCopied, setLinkCopied] = useState(false);
@@ -27,7 +23,7 @@ export default function CopyClipLink(props) {
     };
   });
 
-  const { clipName, className, noText = false } = props;
+  const { clipName, className, noText = false, publicLink = false } = props;
 
   const classNames = ["button", "is-small"];
 
@@ -35,32 +31,48 @@ export default function CopyClipLink(props) {
     classNames.push(className);
   }
 
-  const onClick = (e) => {
-    navigator.clipboard
-      .writeText(formatClipURL(clipName))
-      .then(() => {
-        setLinkCopied(true);
-      })
-      .catch(() => {
-        alert("Failed to copy link!");
-      });
+  const onClick = async (e) => {
+    var clipURL = formatClipURL(clipName);
 
-    e.stopPropagation();
+    // If we're making a public link, we need to append a single clip
+    // authentication token
+    if (publicLink) {
+      const token = await createSingleClipToken(clipName);
+      clipURL.searchParams.append("token", btoa(token));
+    }
+
+    try {
+      await navigator.clipboard.writeText(clipURL.href);
+      setLinkCopied(true);
+    } catch (e) {
+      console.error(e);
+      alert("Failed to copy link!");
+    }
   };
 
   return (
     <Tippy
-      content="Link copied"
+      content={publicLink ? "Public link copied" : "Link copied"}
       animation="shift-away-subtle"
       arrow={false}
       visible={linkCopied}
     >
-      <button className={classNames.join(" ")} onClick={onClick}>
-        <span className="icon is-small">
-          <i className="fas fa-link"></i>
-        </span>
-        {!noText && <span>Copy link</span>}
-      </button>
+      <Tippy content={publicLink ? "Copy public link" : "Copy link"}>
+        <button
+          className={classNames.join(" ")}
+          onClick={(e) => {
+            onClick();
+            e.stopPropagation();
+          }}
+        >
+          <span className="icon is-small">
+            {!publicLink && <i className="fas fa-link"></i>}
+            {publicLink && <i className="fas fa-globe"></i>}
+          </span>
+          {!noText && !publicLink && <span>Copy link</span>}
+          {!noText && publicLink && <span>Copy public link</span>}
+        </button>
+      </Tippy>
     </Tippy>
   );
 }
@@ -69,4 +81,5 @@ CopyClipLink.propTypes = {
   clipName: PropTypes.string,
   className: PropTypes.string,
   noText: PropTypes.bool,
+  publicLink: PropTypes.bool,
 };

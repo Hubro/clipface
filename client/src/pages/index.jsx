@@ -11,7 +11,7 @@ import debounce from "lodash/debounce";
 
 import ClipfaceLayout from "../components/ClipfaceLayout";
 import CopyClipLink from "../components/CopyClipLink";
-import requireAuth from "../requireAuth";
+import requireAuth from "../backend/requireAuth";
 
 const ClearFilterButton = styled.span`
   cursor: pointer;
@@ -27,9 +27,19 @@ const LinkRow = styled.tr`
   }
 `;
 
-const CopyLinkButton = styled(CopyClipLink)`
+const RowButtons = styled.div`
   float: right;
   margin: -3px;
+  display: flex;
+  flex-direction: row;
+
+  * {
+    margin-right: 5px;
+
+    &:last-child {
+      margin-right: 0px;
+    }
+  }
 `;
 
 const IndexPage = ({ videos, title }) => {
@@ -123,7 +133,10 @@ const IndexPage = ({ videos, title }) => {
                     <td>
                       {clip.title || clip.name}
 
-                      <CopyLinkButton clipName={clip.name} noText />
+                      <RowButtons>
+                        <CopyClipLink clipName={clip.name} noText />
+                        <CopyClipLink clipName={clip.name} noText publicLink />
+                      </RowButtons>
                     </td>
                   </LinkRow>
                 )

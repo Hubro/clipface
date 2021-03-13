@@ -1,7 +1,7 @@
 /* Convenience wrapper for getServerSideProps to enforce authentication */
 
-import { checkAuth } from "./backend/auth";
-import { getUserPassword } from "./backend/config";
+import { checkAuth, checkSingleClipAuth, getToken } from "./auth";
+import { getUserPassword } from "./config";
 
 /**
  * Wrapper around getServerSideProps to enforce authentication
@@ -16,10 +16,13 @@ export default function (fn) {
   return async (context) => {
     const userPassword = getUserPassword();
     const authenticated = await checkAuth(context.req);
+    const singlePageAuthenticated = await checkSingleClipAuth(context.req);
 
-    console.log(context.req.url);
-
-    if (!authenticated && context.req.url != "/login") {
+    if (
+      !authenticated &&
+      !singlePageAuthenticated &&
+      context.req.url != "/login"
+    ) {
       return {
         redirect: {
           destination: "/login?next=" + encodeURIComponent(context.req.url),
@@ -37,11 +40,17 @@ export default function (fn) {
         authStatus = "NO_AUTHENTICATION";
       } else if (authenticated) {
         authStatus = "AUTHENTICATED";
+      } else if (singlePageAuthenticated) {
+        authStatus = "SINGLE_PAGE_AUTHENTICATED";
       } else {
-        // TODO: Implement single page authentication
+        throw "Unexpected situation";
       }
 
       props.props.authInfo = { status: authStatus };
+
+      if (singlePageAuthenticated) {
+        props.props.authInfo.token = getToken(context.req);
+      }
     }
 
     return props;

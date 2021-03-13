@@ -5,9 +5,11 @@
  * the current location.
  *
  * @param {string} clipName
+ * @returns {URL}
  */
 export function formatClipURL(clipName) {
-  const base = `${location.protocol}//${location.host}`;
-
-  return `${base}/watch/${encodeURIComponent(clipName)}`;
+  return new URL(
+    `/watch/${encodeURIComponent(clipName)}`,
+    `${location.protocol}//${location.host}`
+  );
 }

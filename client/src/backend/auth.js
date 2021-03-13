@@ -6,6 +6,7 @@
 
 import bcrypt from "bcrypt";
 import cookie from "cookie";
+import path from "path";
 
 import { getUserPassword } from "./config";
 
@@ -23,6 +24,8 @@ export function useAuth(handler) {
   const wrapper = async (req, res) => {
     if (await checkAuth(req)) {
       return handler(req, res);
+    } else if (await checkSingleClipAuth(req)) {
+      return handler(req, res);
     } else {
       res.statusCode = 401;
       res.end();
@@ -34,7 +37,7 @@ export function useAuth(handler) {
 }
 
 /**
- * Checks authentication given a Next.js IncomingMessage object
+ * Checks authentication given a http.IncomingMessage object
  *
  * @async
  * @param {IncomingMessage} req See https://nodejs.org/api/http.html
@@ -66,6 +69,31 @@ export async function checkAuth(req) {
 }
 
 /**
+ * Checks if this request has a valid single clip authentication token
+ *
+ * @param {http.IncomingMessage} req
+ * @returns {Promise<boolean>}
+ */
+export async function checkSingleClipAuth(req) {
+  const url = new URL(req.url, `http://${req.headers.host}`);
+  const token = getToken(req);
+
+  // Paths that should be validated by the single clip auth token
+  const clipPaths = ["/watch", "/api/video"];
+
+  const dirname = path.dirname(url.pathname);
+  const clipname = decodeURIComponent(path.basename(url.pathname));
+
+  if (token && clipPaths.includes(dirname)) {
+    const singlePageAuthenticated = await checkSingleClipToken(token, clipname);
+
+    return singlePageAuthenticated;
+  }
+
+  return false;
+}
+
+/**
  * Checks if a hashed password is valid
  *
  * @async
@@ -94,4 +122,79 @@ export async function hashPassword(password) {
   const salt = await bcrypt.genSalt();
 
   return await bcrypt.hash(password, salt);
+}
+
+/**
+ * Generates a token that will authenticate the user for viewing a single clip.
+ *
+ * This is done by hashing the name of the clip with the configured user
+ * password. This means that all public clip links can be invalidated by
+ * changing the user password, or the link for a single clip can be
+ * invalidated by renaming the clip.
+ *
+ * @async
+ * @param {string} clipName
+ * @returns {string} The token
+ */
+export async function makeSingleClipToken(clipName) {
+  console.debug("Generating single clip token for clip:", clipName);
+
+  const userPassword = getUserPassword();
+
+  if (!userPassword) {
+    throw "Can't generate single clip tokens with no configured user password";
+  }
+
+  const salt = await bcrypt.genSalt();
+  const token = await bcrypt.hash(userPassword + clipName, salt);
+
+  console.debug("Generated single clip token:", token);
+
+  return token;
+}
+
+/**
+ * Checks if a single page token is valid for the given path
+ *
+ * @async
+ * @param {string} token
+ * @param {string} clipName
+ * @returns {Promise<boolean>}
+ */
+export async function checkSingleClipToken(token, clipName) {
+  console.debug("Validating token", token, "for clip name", clipName);
+
+  const userPassword = getUserPassword();
+
+  if (!userPassword) {
+    throw "Can't validate single clip tokens with no configured user password";
+  }
+
+  const result = await bcrypt.compare(userPassword + clipName, token);
+
+  console.debug("Result", result);
+
+  return result;
+}
+
+/**
+ * Helper for fetching the token from a http.IncomingMessage object
+ *
+ * @param {http.IncomingMessage} req
+ * @returns {string|null}
+ */
+export function getToken(req) {
+  const url = new URL(req.url, `http://${req.headers.host}`);
+
+  if (url.searchParams.has("token")) {
+    // Token is Base64 encoded
+    try {
+      return Buffer.from(url.searchParams.get("token"), "base64").toString();
+    } catch (e) {
+      console.error("Failed to get token from query params:", e);
+      return null;
+    }
+  }
+
+  return null;
 }

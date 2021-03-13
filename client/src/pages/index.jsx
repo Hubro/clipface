@@ -135,7 +135,16 @@ const IndexPage = ({ videos, title, authInfo }) => {
 
                       <RowButtons>
                         <CopyClipLink clipName={clip.name} noText />
-                        <CopyClipLink clipName={clip.name} noText publicLink />
+
+                        {authInfo.status == "AUTHENTICATED" && (
+                          // There's no point in showing the "Copy public link"
+                          // button if Clipface is not password protected
+                          <CopyClipLink
+                            clipName={clip.name}
+                            noText
+                            publicLink
+                          />
+                        )}
                       </RowButtons>
                     </td>
                   </LinkRow>

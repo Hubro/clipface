@@ -49,7 +49,8 @@ const saveLocalSettings = () => {
 
   // Also save the settings in a cookie. This allows the server to read the
   // settings when server side rendering.
-  document.cookie = "localSettings=" + JSON.stringify(globalSettings);
+  document.cookie =
+    "localSettings=" + JSON.stringify(globalSettings) + ";path=/";
 };
 
 export const useLocalSettings = () => {

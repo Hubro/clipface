@@ -14,12 +14,12 @@ const ApplicationDiv = styled.div`
   position: static;
 `;
 
-export default ({
+export function ClipfaceLayout({
   children,
   pageName = null,
   pageTitle = null,
   pageSubtitle = null,
-}) => {
+}) {
   const router = useRouter();
 
   // When set to true, a "Log out" button will be displayed
@@ -90,7 +90,9 @@ export default ({
       </ApplicationDiv>
     </>
   );
-};
+}
+
+export default ClipfaceLayout;
 
 /**
  * Logs out through the API

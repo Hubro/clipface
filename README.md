@@ -96,7 +96,7 @@ network, so I'm simply referring to Clipface by its container name,
 
 **NB:** This config assumes you have the file "dhparam.pem" in your NGINX
 *root config directory. If you don't, you can generate it like this: `openssl
-*dhparam -out /my/nginx/config/path/dhparam-2048.pem 2048`.
+dhparam -out /my/nginx/config/path/dhparam.pem 2048`.
 
 **NB:** The `Strict-Transport-Security` header informs browsers to always use
 HTTPS towards your domain. This will break any HTTP applications you are

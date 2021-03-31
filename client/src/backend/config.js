@@ -90,5 +90,12 @@ function loadConfig() {
     return {};
   }
 
+  if (!fs.existsSync(configFilePath) || !fs.statSync(configFilePath).isFile()) {
+    console.warn(
+      `Config file (${configFilePath}) doesn't exist, using default config`
+    );
+    return {};
+  }
+
   return toml.parse(fs.readFileSync(configFilePath));
 }

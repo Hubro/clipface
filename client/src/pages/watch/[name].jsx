@@ -3,6 +3,8 @@
  */
 
 import { useRouter } from "next/router";
+import Head from "next/head";
+import { useEffect, useRef } from "react";
 import styled from "styled-components";
 import TimeAgo from "react-timeago";
 import prettyBytes from "pretty-bytes";
@@ -12,7 +14,7 @@ import ClipfaceLayout from "../../components/ClipfaceLayout";
 import CopyClipLink from "../../components/CopyClipLink";
 import useLocalSettings from "../../localSettings";
 import requireAuth from "../../backend/requireAuth";
-import { useEffect, useRef } from "react";
+import { getPublicURL } from "../../util";
 
 const ButtonRow = styled.div`
   display: flex;
@@ -80,7 +82,7 @@ const VideoDescription = styled.div`
   margin-top: 25px;
 `;
 
-const WatchPage = ({ clipMeta, authInfo }) => {
+const WatchPage = ({ clipMeta, authInfo, currentURL }) => {
   const router = useRouter();
   const videoRef = useRef();
   const [localSettings, setLocalSettings] = useLocalSettings();
@@ -90,6 +92,9 @@ const WatchPage = ({ clipMeta, authInfo }) => {
   useEffect(() => {
     videoRef.current.volume = localSettings.videoVolume;
   });
+
+  // Rehydrate serialized value from getServerSideProps
+  currentURL = new URL(currentURL);
 
   const clipName = router.query.name;
   const theaterMode = localSettings.theaterMode;
@@ -134,7 +139,6 @@ const WatchPage = ({ clipMeta, authInfo }) => {
   }
 
   const videoProps = {
-    // Forward any query param auth tokens to the clip URL
     src: videoSrc,
     controls: true,
     autoPlay: true,
@@ -146,6 +150,13 @@ const WatchPage = ({ clipMeta, authInfo }) => {
 
   return (
     <>
+      <Head>
+        <meta
+          property="og:video"
+          value={`${currentURL.protocol}//${currentURL.host}${videoSrc}`}
+        />
+      </Head>
+
       <ClipfaceLayout authInfo={authInfo} pageName="watch">
         <ButtonRow>
           {/* Only show "Back to clips" button to authenticated users */}
@@ -220,16 +231,14 @@ const WatchPage = ({ clipMeta, authInfo }) => {
   );
 };
 
-export const getServerSideProps = requireAuth(async (context) => {
+export const getServerSideProps = requireAuth(async ({ query, req }) => {
   const getMeta = require("../../backend/getMeta").default;
 
-  const clipName = context.query.name;
+  const clipName = query.name;
   const clipMeta = getMeta(clipName);
 
-  console.log("Clip metadata:", clipMeta);
-
   return {
-    props: { clipMeta },
+    props: { clipMeta, currentURL: getPublicURL(req).toString() },
   };
 });
 

@@ -166,6 +166,8 @@ const WatchPage = ({ clipMeta, authInfo, currentURL }) => {
         <meta property="og:video:url" value={fullVideoURL} />
         <meta property="og:video:secure_url" value={fullVideoURL} />
         <meta property="og:video:type" content={clipMeta.mime} />
+        <meta property="og:video:width" content="1280" />
+        <meta property="og:video:height" content="720" />
       </Head>
 
       <ClipfaceLayout authInfo={authInfo} pageName="watch">

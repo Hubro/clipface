@@ -131,12 +131,14 @@ const WatchPage = ({ clipMeta, authInfo, currentURL }) => {
     });
   };
 
-  var videoSrc = "/api/video/" + clipName;
+  var videoSrc = "/api/video/" + encodeURIComponent(clipName);
 
   // Forward the single clip auth token to the clip URL
   if (authInfo.status == "SINGLE_PAGE_AUTHENTICATED") {
     videoSrc += "?token=" + Buffer.from(authInfo.token).toString("base64");
   }
+
+  const fullVideoURL = `${currentURL.protocol}//${currentURL.host}${videoSrc}`;
 
   const videoProps = {
     src: videoSrc,
@@ -151,10 +153,18 @@ const WatchPage = ({ clipMeta, authInfo, currentURL }) => {
   return (
     <>
       <Head>
-        <meta
-          property="og:video"
-          value={`${currentURL.protocol}//${currentURL.host}${videoSrc}`}
-        />
+        <meta property="og:type" value="video.other" />
+        <meta property="og:site_name" value={"Clipface - " + currentURL.host} />
+        <meta property="og:url" value={currentURL.toString()} />
+        <meta property="og:title" value={clipMeta.title || clipName} />
+
+        {clipMeta.description && (
+          <meta property="og:description" value={clipMeta.description} />
+        )}
+
+        <meta property="og:video" value={fullVideoURL} />
+        <meta property="og:video:url" value={fullVideoURL} />
+        <meta property="og:video:secure_url" value={fullVideoURL} />
       </Head>
 
       <ClipfaceLayout authInfo={authInfo} pageName="watch">

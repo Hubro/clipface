@@ -97,12 +97,12 @@ network, so I'm simply referring to Clipface by its container name,
 "clipface".
 
 **NB:** The "X-Forwarded-*" headers are required for the server to know its
-*own URL, which is needed for certain server-side rendered meta tags. If you
-*don't configure these headers, things like embedding Discord videos will
-*fail.
+own URL, which is needed for certain server-side rendered meta tags. If you
+don't configure these headers, things like embedding Discord videos will
+fail.
 
 **NB:** This config assumes you have the file "dhparam.pem" in your NGINX
-*root config directory. If you don't, you can generate it like this: `openssl
+root config directory. If you don't, you can generate it like this: `openssl
 dhparam -out /my/nginx/config/path/dhparam.pem 2048`.
 
 **NB:** The `Strict-Transport-Security` header informs browsers to always use

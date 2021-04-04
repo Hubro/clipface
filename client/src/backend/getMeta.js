@@ -5,6 +5,8 @@
 import fs from "fs";
 import path from "path";
 
+import * as mime from "mime-types";
+
 import { getClipsPath } from "./config";
 
 /**
@@ -29,6 +31,7 @@ export default function getMeta(clipFileName) {
 
   return {
     name: clipFileName,
+    mime: mime.lookup(clipFileName),
     size: stats.size,
     saved: stats.mtimeMs,
     title: meta.title || null,

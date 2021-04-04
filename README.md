@@ -80,6 +80,8 @@ server {
 
     location / {
         proxy_pass http://clipface/;
+        proxy_set_header X-Forwarded-Host $host;
+        proxy_set_header X-Forwarded-Proto $scheme;
         proxy_connect_timeout 3s;
         proxy_send_timeout 10s;
         proxy_read_timeout 300s;
@@ -94,13 +96,18 @@ running both Clipface and NGINX as Docker containers in the same Docker
 network, so I'm simply referring to Clipface by its container name,
 "clipface".
 
+**NB:** The "X-Forwarded-*" headers are required for the server to know its
+*own URL, which is needed for certain server-side rendered meta tags. If you
+*don't configure these headers, things like embedding Discord videos will
+*fail.
+
 **NB:** This config assumes you have the file "dhparam.pem" in your NGINX
 *root config directory. If you don't, you can generate it like this: `openssl
 dhparam -out /my/nginx/config/path/dhparam.pem 2048`.
 
 **NB:** The `Strict-Transport-Security` header informs browsers to always use
-HTTPS towards your domain. This will break any HTTP applications you are
-hosting on your domain unless they also use HTTPS, so enable with care.
+HTTPS towards your domain. This will break any HTTP (not HTTPS) applications
+you are hosting on your domain, so enable with care.
 
 ## Authentication
 

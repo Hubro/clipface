@@ -11,8 +11,8 @@ Super simple, self hosted clip sharing application.
 - Optional authentication to protect your clips
 - "Copy public link" for copying clip links that circumvents user
   authentication for a single clip
-- Implements OpenGraph metadata so videos are automatically embedded in
-  Facebook posts, Discord messages etc.
+- Uses OpenGraph metadata so videos are automatically embedded in Facebook
+  posts, Discord messages etc.
 
 ![Watch page](screenshots/watch-page.png)
 
@@ -59,7 +59,7 @@ config file or by setting environment variables (or both.) For Docker
 deployments, using environment variables is the most convenient option.
 
 If you would rather use a config file than environment variables, you can
-use [config/default.toml](config/default.toml) as a reference. Mount the
+use [config/default.toml](client/config/default.toml) as a reference. Mount the
 resulting file to `/config/local.toml` inside the container. Any setting you
 put in your config file will override the corresponding setting from the
 default config file. If you want to leave a parameter at its default value,

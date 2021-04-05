@@ -4,10 +4,11 @@
 
 import fs from "fs";
 import path from "path";
+import config from "config";
 
 import * as mime from "mime-types";
 
-import { getClipsPath } from "./config";
+const CLIPS_PATH = config.get("clips_path");
 
 /**
  * Returns metadata for a clip
@@ -16,12 +17,11 @@ import { getClipsPath } from "./config";
  * @returns {object}
  */
 export default function getMeta(clipFileName) {
-  const clipsPath = getClipsPath();
-  const stats = fs.statSync(path.join(clipsPath, clipFileName));
+  const stats = fs.statSync(path.join(CLIPS_PATH, clipFileName));
   const clipBaseName = path.basename(clipFileName, path.extname(clipFileName));
 
   let meta = null;
-  const metadataPath = path.join(clipsPath, clipBaseName + ".json");
+  const metadataPath = path.join(CLIPS_PATH, clipBaseName + ".json");
 
   try {
     meta = JSON.parse(fs.readFileSync(metadataPath));

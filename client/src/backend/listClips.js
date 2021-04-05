@@ -7,12 +7,12 @@
 import fs from "fs";
 import path from "path";
 import glob from "glob";
+import config from "config";
 
-import { getClipsPath } from "./config";
+const CLIPS_PATH = config.get("clips_path");
 
 export default function listClips() {
-  const clipsPath = getClipsPath();
-  let clips = glob.sync(`${clipsPath}/*.@(mkv|mp4|json)`).sort().reverse();
+  let clips = glob.sync(`${CLIPS_PATH}/*.@(mkv|mp4|json)`).sort().reverse();
 
   const clipsMeta = {};
 

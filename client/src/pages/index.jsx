@@ -158,8 +158,9 @@ const IndexPage = ({ videos, title, authInfo }) => {
 };
 
 export const getServerSideProps = requireAuth(async (context) => {
+  const config = require("config");
+
   const { checkAuth } = require("../backend/auth");
-  const { getClipsPageTitle } = require("../backend/config");
 
   let videos = [];
 
@@ -169,7 +170,14 @@ export const getServerSideProps = requireAuth(async (context) => {
     videos = listClips();
   }
 
-  return { props: { videos, title: getClipsPageTitle() } };
+  return {
+    props: {
+      videos,
+      title: config.has("clips_page_title")
+        ? config.get("clips_page_title")
+        : null,
+    },
+  };
 });
 
 export default IndexPage;

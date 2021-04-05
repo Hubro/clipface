@@ -5,7 +5,7 @@
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
-import { getUserPassword } from "../backend/config";
+import config from "config";
 
 import ClipfaceLayout from "../components/ClipfaceLayout";
 
@@ -139,7 +139,7 @@ async function login(password) {
 
 export async function getServerSideProps(context) {
   // If no user authentication is configured, forward to the index page
-  if (!getUserPassword()) {
+  if (!config.has("user_password")) {
     return {
       redirect: {
         destination: "/",

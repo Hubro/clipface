@@ -5,7 +5,7 @@
 
 # The path where clips are located, this option is mandatory
 #
-# clips_path = "/clips"
+clips_path = "/clips"
 
 # Password needed to watch clips
 #
@@ -20,7 +20,7 @@
 # using SSL (HTTPS). If you are not using SSL, you need to set this option to
 # false.
 #
-# secure_cookies = true
+secure_cookies = true
 
 # Title displayed on the clip list page
 #

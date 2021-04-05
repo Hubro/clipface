@@ -7,8 +7,7 @@
 import bcrypt from "bcrypt";
 import cookie from "cookie";
 import path from "path";
-
-import { getUserPassword } from "./config";
+import config from "config";
 
 /**
  * Middleware for handling authentication
@@ -19,8 +18,6 @@ import { getUserPassword } from "./config";
  * @returns {function}
  */
 export function useAuth(handler) {
-  const userPassword = getUserPassword();
-
   const wrapper = async (req, res) => {
     if (await checkAuth(req)) {
       return handler(req, res);
@@ -56,10 +53,8 @@ export async function checkAuth(req) {
     return cookie.parse(rawCookie)["auth"] || null;
   };
 
-  const userPassword = getUserPassword();
-
   // Always succeed auth check when no user authentication has been configured
-  if (!userPassword) {
+  if (!config.has("user_password")) {
     return true;
   }
 
@@ -106,7 +101,7 @@ export async function checkHashedPassword(user, hashedPassword) {
     throw "Logging in as non-default user is not yet supported";
   }
 
-  const userPassword = getUserPassword();
+  const userPassword = config.get("user_password");
 
   return await bcrypt.compare(userPassword, hashedPassword);
 }
@@ -139,11 +134,11 @@ export async function hashPassword(password) {
 export async function makeSingleClipToken(clipName) {
   console.debug("Generating single clip token for clip:", clipName);
 
-  const userPassword = getUserPassword();
-
-  if (!userPassword) {
+  if (!config.has("user_password")) {
     throw "Can't generate single clip tokens with no configured user password";
   }
+
+  const userPassword = config.get("user_password");
 
   const salt = await bcrypt.genSalt();
   const token = await bcrypt.hash(userPassword + clipName, salt);
@@ -164,12 +159,11 @@ export async function makeSingleClipToken(clipName) {
 export async function checkSingleClipToken(token, clipName) {
   console.debug("Validating token", token, "for clip name", clipName);
 
-  const userPassword = getUserPassword();
-
-  if (!userPassword) {
+  if (!config.has("user_password")) {
     throw "Can't validate single clip tokens with no configured user password";
   }
 
+  const userPassword = config.get("user_password");
   const result = await bcrypt.compare(userPassword + clipName, token);
 
   console.debug("Result", result);

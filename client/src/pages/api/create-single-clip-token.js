@@ -2,8 +2,9 @@
  * API route for generating tokens to authenticate single pages
  */
 
+import config from "config";
+
 import { useAuth, makeSingleClipToken } from "../../backend/auth";
-import { getUserPassword } from "../../backend/config";
 
 export default useAuth(async (req, res) => {
   // Only POST is allowed on this route
@@ -15,9 +16,7 @@ export default useAuth(async (req, res) => {
 
   res.setHeader("Content-Type", "application/json");
 
-  const userPassword = getUserPassword();
-
-  if (!userPassword) {
+  if (!config.has("user_password")) {
     res.statusCode = 400;
     res.end("Can't generate tokens when authentication is not configured\n");
     return;

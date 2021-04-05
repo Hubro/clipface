@@ -7,6 +7,7 @@
   "dependencies": {
     "@tippyjs/react": "^4.2.0",
     "bcrypt": "^5.0.0",
+    "config": "^3.3.6",
     "cookie": "^0.4.1",
     "glob": "^7.1.6",
     "lodash": "^4.17.20",

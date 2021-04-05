@@ -3,8 +3,8 @@
  */
 
 import cookie from "cookie";
+import config from "config";
 
-import { getUserPassword, getSecureCookies } from "../../backend/config";
 import { hashPassword } from "../../backend/auth";
 
 export default function login(req, res) {
@@ -15,13 +15,13 @@ export default function login(req, res) {
     return;
   }
 
-  const userPassword = getUserPassword();
-
-  if (!userPassword) {
+  if (!config.has("user_password")) {
     res.statusCode = 400;
     res.end("User authentication not configured\n");
     return;
   }
+
+  const userPassword = config.get("user_password");
 
   if (req.body && "password" in req.body) {
     if (userPassword == req.body["password"]) {
@@ -33,7 +33,7 @@ export default function login(req, res) {
           cookie.serialize("auth", hashedPassword, {
             httpOnly: true,
             sameSite: true,
-            secure: getSecureCookies(),
+            secure: config.get("secure_cookies"),
             path: "/",
             maxAge: 31536000, // One year
           })

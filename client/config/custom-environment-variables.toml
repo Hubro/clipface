@@ -1,0 +1,9 @@
+#
+# Contains environment variable config mapping
+#
+# See: https://github.com/lorenwest/node-config/wiki/Environment-Variables#custom-environment-variables
+#
+clips_path = "CLIPFACE_CLIPS_PATH"
+user_password = "CLIPFACE_USER_PASSWORD"
+secure_cookies = "CLIPFACE_SECURE_COOKIES"
+clips_page_title = "CLIPFACE_PAGE_TITLE"

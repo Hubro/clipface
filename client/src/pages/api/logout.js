@@ -5,8 +5,7 @@
  */
 
 import cookie from "cookie";
-
-import { getSecureCookies } from "../../backend/config";
+import config from "config";
 
 export default function login(req, res) {
   // Only POST is allowed on this route
@@ -22,7 +21,7 @@ export default function login(req, res) {
       expires: new Date("1900-01-01"),
       httpOnly: true,
       sameSite: true,
-      secure: getSecureCookies(),
+      secure: config.get("secure_cookies"),
       path: "/",
     })
   );

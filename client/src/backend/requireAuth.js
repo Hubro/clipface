@@ -1,7 +1,8 @@
 /* Convenience wrapper for getServerSideProps to enforce authentication */
 
+import config from "config";
+
 import { checkAuth, checkSingleClipAuth, getToken } from "./auth";
-import { getUserPassword } from "./config";
 
 /**
  * Wrapper around getServerSideProps to enforce authentication
@@ -14,7 +15,6 @@ import { getUserPassword } from "./config";
  */
 export default function (fn) {
   return async (context) => {
-    const userPassword = getUserPassword();
     const authenticated = await checkAuth(context.req);
     const singlePageAuthenticated = await checkSingleClipAuth(context.req);
 
@@ -36,7 +36,7 @@ export default function (fn) {
     if (props.props) {
       var authStatus;
 
-      if (!userPassword) {
+      if (!config.has("user_password")) {
         authStatus = "NO_AUTHENTICATION";
       } else if (authenticated) {
         authStatus = "AUTHENTICATED";

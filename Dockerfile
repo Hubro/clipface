@@ -2,10 +2,7 @@ FROM node:alpine
 
 # App setup
 
-COPY client/.next/ /app/.next/
-COPY client/package.json /app/
-COPY client/yarn.lock /app/
-COPY client/config/ /config/
+ADD client/docker-bundle.tgz /
 
 WORKDIR /app
 

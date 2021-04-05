@@ -42,6 +42,12 @@ const RowButtons = styled.div`
   }
 `;
 
+const NoVideosPlaceholder = styled.div`
+  background-color: #eee;
+  text-align: center;
+  padding: 50px;
+`;
+
 const IndexPage = ({ videos, title, authInfo }) => {
   const [filter, setFilter] = useState("");
   const filterBox = useRef();
@@ -107,7 +113,10 @@ const IndexPage = ({ videos, title, authInfo }) => {
           </div>
         </div>
 
-        <table className="table is-fullwidth is-bordered">
+        <table
+          className="table is-fullwidth is-bordered"
+          style={{ marginBottom: 0 }} // Remove bottom margin added by Bulma
+        >
           <thead>
             <tr>
               <th>Saved</th>
@@ -152,6 +161,10 @@ const IndexPage = ({ videos, title, authInfo }) => {
             )}
           </tbody>
         </table>
+
+        {videos.length == 0 && (
+          <NoVideosPlaceholder>No clips here yet</NoVideosPlaceholder>
+        )}
       </div>
     </ClipfaceLayout>
   );

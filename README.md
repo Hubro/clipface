@@ -20,28 +20,73 @@ docker run -d \
   tomsan/clipface:latest
 ```
 
-For more advanced usage, you need to add a config file. Create the file
-"clipface.toml" on your host machine and add the content from
-[clipface.toml.example][1].
-
-[1]: https://raw.githubusercontent.com/Hubro/clipface/master/client/clipface.example.toml
-
-Map the config file to `/config/clipface.toml` inside the Docker container,
-for example:
+For more advanced usage, you need to provide Clipface with some
+configuration. (See [Configuration](#configuration).) Here is an example
+where we require authentication and set the clip list page title to "Bob's
+clips":
 
 ```
 docker run -d \
   --name clipface \
   -v /host/path/to/clips:/clips \
-  -v /host/path/to/clipface.toml:/config/clipface.toml \
   -p 80:80 \
+  -e CLIPFACE_USER_PASSWORD="password123" \
+  -e CLIPFACE_CLIPS_PAGE_TITLE="Bob's clips" \
   tomsan/clipface:latest
 ```
 
+## Configuration
+
+Clipface uses [node-config](https://github.com/lorenwest/node-config) for
+configuration management. This means that Clipface can be configured using a
+config file or by setting environment variables (or both.) For Docker
+deployments, using environment variables is the most convenient option.
+
+If you want to use a config file, you can use
+[config/default.toml](config/default.toml) as a reference. Mount the
+resulting file to `/config/local.toml` inside the container. Any setting you
+put in your config file will override the corresponding setting from the
+default config file. If you want to leave a value at its default value,
+simply omit it from your config file.
+
+List of config parameters:
+
+- `clips_path` - The absolute path of the directory containing the clips
+  that Clipface should host. This defaults to `"/clips"`, which is a
+  convenient value for Docker images.
+
+  **Default value**: `"/clips"`  
+  **Environment variable**: `CLIPFACE_CLIPS_PATH`
+
+- `user_password` - A password used to protect this Clipface instance. If
+  set, users must first input this password before they can watch any clips
+  or see the list of clips. By default this parameter is not set, which will
+  allow anybody to browse and watch all your clips.
+
+  **Default value**: *(unset)*  
+  **Environment variable**: `CLIPFACE_USER_PASSWORD`
+
+- `secure_cookies` - If set to true (which is the default value), the
+  "secure" setting will be used for the authication cookie, which means the
+  cookie will only be included when using SSL (HTTPS). If you are not using
+  SSL, you need to set this option to false, or authentication won't work.
+
+  **Default value**: `true`  
+  **Environment variable**: `CLIPFACE_SECURE_COOKIES`
+
+- `clips_page_title` - Title displayed on the clip list page
+
+  If not set (which is the default), no title will be displayed and the
+  header will be significantly smaller.
+
+  **Default value**: *(unset)*  
+  **Environment variable**: `CLIPFACE_CLIPS_PAGE_TITLE`
+
 ## NGINX reverse proxy with SSL
 
-Clipface is intended to be used behind a SSL enabled reverse proxy (though
-that's not required.)
+For the best security, you should run Clipface behind a SSL-enabled reverse
+proxy, especially if you are using authentication. Otherwise, passwords will
+be transferred in plain text over the internet, which is always a bad idea.
 
 Here is an example NGINX configuration that uses certificates from Let's
 Encrypt:
@@ -96,7 +141,7 @@ running both Clipface and NGINX as Docker containers in the same Docker
 network, so I'm simply referring to Clipface by its container name,
 "clipface".
 
-**NB:** The "X-Forwarded-*" headers are required for the server to know its
+**NB:** The "X-Forwarded-\*" headers are required for the server to know its
 own URL, which is needed for certain server-side rendered meta tags. If you
 don't configure these headers, things like embedding Discord videos will
 fail.

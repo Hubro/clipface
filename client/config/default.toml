@@ -1,30 +1,9 @@
 #
-# Example config file for Clipface
+# Default config for Clipface
 #
-# Each option is documented with their default value.
-
-# The path where clips are located, this option is mandatory
+# Each option is documented in README.md
 #
 clips_path = "/clips"
-
-# Password needed to watch clips
-#
-# If no password is provided, no authentication will be needed to watch clips.
-#
 # user_password =
-
-# Whether or not to use secure cookies
-#
-# If set to true (the default value), the "secure" setting will be used for
-# the authication cookie, which means the cookie will only be included when
-# using SSL (HTTPS). If you are not using SSL, you need to set this option to
-# false.
-#
 secure_cookies = true
-
-# Title displayed on the clip list page
-#
-# If not set (which is the default), no title will be displayed and the header
-# will be significantly smaller.
-#
 # clips_page_title =

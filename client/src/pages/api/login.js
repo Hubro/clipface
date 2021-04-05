@@ -6,6 +6,7 @@ import cookie from "cookie";
 import config from "config";
 
 import { hashPassword } from "../../backend/auth";
+import { booleanify } from "../../util";
 
 export default function login(req, res) {
   // Only POST is allowed on this route
@@ -22,6 +23,7 @@ export default function login(req, res) {
   }
 
   const userPassword = config.get("user_password");
+  const useSecureCookies = booleanify(config.get("secure_cookies"));
 
   if (req.body && "password" in req.body) {
     if (userPassword == req.body["password"]) {
@@ -33,7 +35,7 @@ export default function login(req, res) {
           cookie.serialize("auth", hashedPassword, {
             httpOnly: true,
             sameSite: true,
-            secure: config.get("secure_cookies"),
+            secure: useSecureCookies,
             path: "/",
             maxAge: 31536000, // One year
           })

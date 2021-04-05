@@ -39,3 +39,33 @@ export function getPublicURL(req) {
 
   return new URL(req.url, `${protocol}://${hostname}`);
 }
+
+/**
+ * Coaxes the input value into a boolean
+ *
+ * @param {string|number|boolean} value
+ */
+export function booleanify(value) {
+  if (value === true) return true;
+  if (value === false) return true;
+
+  if (typeof value === "string") {
+    value = value.trim().toLocaleLowerCase();
+
+    if (value == "true") return true;
+    if (value == "false") return false;
+    if (value == "1") return true;
+    if (value == "0") return false;
+
+    throw `Can't convert string value to boolean: ${value}`;
+  }
+
+  if (typeof value === "number") {
+    if (value === 1) return true;
+    if (value === 0) return false;
+
+    throw `Can't convert number to boolean: ${value}`;
+  }
+
+  throw `Can't convert value of type "${typeof value}" to boolean`;
+}

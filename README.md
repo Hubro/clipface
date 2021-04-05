@@ -1,6 +1,22 @@
 # Clippy Mc. Clipface
 
-Simple, self hosted clip sharing application.
+Super simple, self hosted clip sharing application.
+
+## Features
+
+- Simple, intuitive user interface
+- No config required, hosts your existing clip folder
+- Super simple deployement with official Docker image
+- Simple but informative clip list with real time search
+- Optional authentication to protect your clips
+- "Copy public link" for copying clip links that circumvents user
+  authentication for a single clip
+- Implements OpenGraph metadata so videos are automatically embedded in
+  Facebook posts, Discord messages etc.
+
+![Watch page](screenshots/watch-page.png)
+
+![Clip list](screenshots/clip-list.png)
 
 ## Usage with Docker
 
@@ -42,11 +58,11 @@ configuration management. This means that Clipface can be configured using a
 config file or by setting environment variables (or both.) For Docker
 deployments, using environment variables is the most convenient option.
 
-If you want to use a config file, you can use
-[config/default.toml](config/default.toml) as a reference. Mount the
+If you would rather use a config file than environment variables, you can
+use [config/default.toml](config/default.toml) as a reference. Mount the
 resulting file to `/config/local.toml` inside the container. Any setting you
 put in your config file will override the corresponding setting from the
-default config file. If you want to leave a value at its default value,
+default config file. If you want to leave a parameter at its default value,
 simply omit it from your config file.
 
 List of config parameters:
@@ -59,9 +75,9 @@ List of config parameters:
   **Environment variable**: `CLIPFACE_CLIPS_PATH`
 
 - `user_password` - A password used to protect this Clipface instance. If
-  set, users must first input this password before they can watch any clips
-  or see the list of clips. By default this parameter is not set, which will
-  allow anybody to browse and watch all your clips.
+  set, users must input this password before they can watch any clips or see
+  the list of clips. By default this parameter is not set, which will allow
+  anybody to browse and watch all your clips.
 
   **Default value**: *(unset)*  
   **Environment variable**: `CLIPFACE_USER_PASSWORD`

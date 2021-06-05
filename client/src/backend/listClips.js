@@ -10,9 +10,10 @@ import glob from "glob";
 import config from "config";
 
 const CLIPS_PATH = config.get("clips_path");
+const CLIPS_GLOB = `${CLIPS_PATH}/*.@(mkv|mp4|webm|mov|mpeg|avi|wmv|json)`;
 
 export default function listClips() {
-  let clips = glob.sync(`${CLIPS_PATH}/*.@(mkv|mp4|json)`).sort().reverse();
+  let clips = glob.sync(CLIPS_GLOB).sort().reverse();
 
   const clipsMeta = {};
 

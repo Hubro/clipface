@@ -7,3 +7,4 @@ clips_path = "/clips"
 # user_password =
 secure_cookies = true
 # clips_page_title =
+pagination = true

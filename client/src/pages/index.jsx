@@ -9,9 +9,12 @@ import TimeAgo from "react-timeago";
 import prettyBytes from "pretty-bytes";
 import debounce from "lodash/debounce";
 
+import Pagination from "../components/Pagination";
 import ClipfaceLayout from "../components/ClipfaceLayout";
 import CopyClipLink from "../components/CopyClipLink";
 import requireAuth from "../backend/requireAuth";
+
+const CLIPS_PER_PAGE = 20;
 
 const ClearFilterButton = styled.span`
   cursor: pointer;
@@ -48,17 +51,32 @@ const NoVideosPlaceholder = styled.div`
   padding: 50px;
 `;
 
-const IndexPage = ({ videos, title, authInfo }) => {
+const IndexPage = ({ videos, title, pagination, authInfo }) => {
   const [filter, setFilter] = useState("");
+  const [currentPage, setCurrentPage] = useState(0);
   const filterBox = useRef();
+
+  const totalClipCount = videos.length;
+  const pageCount = Math.ceil(totalClipCount / CLIPS_PER_PAGE);
+
+  if (pagination) {
+    videos = videos.slice(
+      currentPage * CLIPS_PER_PAGE,
+      currentPage * CLIPS_PER_PAGE + CLIPS_PER_PAGE
+    );
+  }
 
   // Focus filter box on load
   useEffect(() => {
     filterBox.current.focus();
-  });
+  }, []);
 
   // Setting the filter text for every keypress is terrible for performance, so
   // we only do it 250ms after the user stops typing
+  //
+  // TODO: Is it still terrible for performance when pagination is used? Much
+  // less to render for each key press.
+  //
   const debouncedSetFilter = debounce((text) => {
     setFilter(text);
   }, 250);
@@ -113,14 +131,24 @@ const IndexPage = ({ videos, title, authInfo }) => {
           </div>
         </div>
 
+        {pagination && pageCount > 1 && (
+          <Pagination
+            currentPage={currentPage}
+            totalPages={pageCount}
+            totalClips={totalClipCount}
+            onChangePage={(newPageNumber) => setCurrentPage(newPageNumber)}
+            showLabel
+          />
+        )}
+
         <table
           className="table is-fullwidth is-bordered"
           style={{ marginBottom: 0 }} // Remove bottom margin added by Bulma
         >
           <thead>
             <tr>
-              <th>Saved</th>
-              <th>Clip size</th>
+              <th width="150px">Saved</th>
+              <th width="100px">Clip size</th>
               <th>Clip name</th>
             </tr>
           </thead>
@@ -165,6 +193,15 @@ const IndexPage = ({ videos, title, authInfo }) => {
         {videos.length == 0 && (
           <NoVideosPlaceholder>No clips here yet</NoVideosPlaceholder>
         )}
+
+        {pagination && pageCount > 1 && (
+          <Pagination
+            currentPage={currentPage}
+            totalPages={pageCount}
+            totalClips={totalClipCount}
+            onChangePage={(newPageNumber) => setCurrentPage(newPageNumber)}
+          />
+        )}
       </div>
     </ClipfaceLayout>
   );
@@ -186,6 +223,7 @@ export const getServerSideProps = requireAuth(async (context) => {
   return {
     props: {
       videos,
+      pagination: config.get("pagination"),
       title: config.has("clips_page_title")
         ? config.get("clips_page_title")
         : null,

@@ -204,3 +204,21 @@ specific clip can be invalidated by renaming the clip.
 ## Roadmap
 
 See [Clipface v2.0 tasks](https://github.com/Hubro/clipface/projects/1).
+
+## Troubleshooting
+
+If you have an issue with Clipface, please skim the list of known issues below.
+If they don't apply to you, please ask a question in the
+[Discussions][discussions] page or open a [new issue][new-issue].
+
+[discussions]: https://github.com/Hubro/clipface/discussions
+[new-issue]: https://github.com/Hubro/clipface/issues/new
+
+### Embeds in Discord are slow / not loading
+
+This is probably not an issue with Clipface. Discord seems to have an issue
+with larger clips, since all clips are proxied through Discord's servers. Clips
+above 100MB will fail entirely. Ref: https://github.com/Hubro/clipface/issues/20#issuecomment-898934004
+
+If your clips are of a reasonable bitrate and size, please confirm that the
+server you are hosting Clipface on has sufficient bandwidth.

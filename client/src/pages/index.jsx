@@ -56,7 +56,24 @@ const IndexPage = ({ videos, title, pagination, authInfo }) => {
   const [localSettings, setLocalSettings] = useLocalSettings();
   const filterBox = useRef();
 
+  // Focus filter box on load
+  useEffect(() => {
+    filterBox.current.focus();
+  }, []);
+
   const { clipsPerPage } = localSettings;
+
+  /*
+   * Filter clips
+   */
+
+  if (filter) {
+    videos = videos.filter((clip) => clip.name.toLowerCase().includes(filter));
+  }
+
+  /*
+   * Paginate clips
+   */
 
   const totalClipCount = videos.length;
   const pageCount = Math.ceil(totalClipCount / clipsPerPage);
@@ -67,11 +84,6 @@ const IndexPage = ({ videos, title, pagination, authInfo }) => {
       currentPage * clipsPerPage + clipsPerPage
     );
   }
-
-  // Focus filter box on load
-  useEffect(() => {
-    filterBox.current.focus();
-  }, []);
 
   // Setting the filter text for every keypress is terrible for performance, so
   // we only do it 250ms after the user stops typing
@@ -98,20 +110,6 @@ const IndexPage = ({ videos, title, pagination, authInfo }) => {
 
   const handleChangeClipsPerPage = (newClipsPerPage) => {
     setLocalSettings({ ...localSettings, clipsPerPage: newClipsPerPage });
-  };
-
-  /**
-   * Returns true if the filter matches the input clip
-   *
-   * Always returns true if no filter is set.
-   *
-   * @param {string} clipName
-   * @returns {boolean}
-   */
-  const filterMatch = (clipName) => {
-    if (filter == "") return true;
-
-    return clipName.toLowerCase().includes(filter);
   };
 
   return (
@@ -162,39 +160,32 @@ const IndexPage = ({ videos, title, pagination, authInfo }) => {
           </thead>
 
           <tbody>
-            {videos.map(
-              (clip) =>
-                filterMatch(clip.name) && (
-                  <LinkRow
-                    key={clip.name}
-                    onClick={() => {
-                      handleLinkClick(clip.name);
-                    }}
-                  >
-                    <td>
-                      <TimeAgo date={clip.saved} />
-                    </td>
-                    <td>{prettyBytes(clip.size)}</td>
-                    <td>
-                      {clip.title || clip.name}
+            {videos.map((clip) => (
+              <LinkRow
+                key={clip.name}
+                onClick={() => {
+                  handleLinkClick(clip.name);
+                }}
+              >
+                <td>
+                  <TimeAgo date={clip.saved} />
+                </td>
+                <td>{prettyBytes(clip.size)}</td>
+                <td>
+                  {clip.title || clip.name}
 
-                      <RowButtons>
-                        <CopyClipLink clipName={clip.name} noText />
+                  <RowButtons>
+                    <CopyClipLink clipName={clip.name} noText />
 
-                        {authInfo.status == "AUTHENTICATED" && (
-                          // There's no point in showing the "Copy public link"
-                          // button if Clipface is not password protected
-                          <CopyClipLink
-                            clipName={clip.name}
-                            noText
-                            publicLink
-                          />
-                        )}
-                      </RowButtons>
-                    </td>
-                  </LinkRow>
-                )
-            )}
+                    {authInfo.status == "AUTHENTICATED" && (
+                      // There's no point in showing the "Copy public link"
+                      // button if Clipface is not password protected
+                      <CopyClipLink clipName={clip.name} noText publicLink />
+                    )}
+                  </RowButtons>
+                </td>
+              </LinkRow>
+            ))}
           </tbody>
         </table>
 

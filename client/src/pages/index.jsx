@@ -86,14 +86,10 @@ const IndexPage = ({ videos, title, pagination, authInfo }) => {
   }
 
   // Setting the filter text for every keypress is terrible for performance, so
-  // we only do it 250ms after the user stops typing
-  //
-  // TODO: Is it still terrible for performance when pagination is used? Much
-  // less to render for each key press.
-  //
+  // we only do it 50ms after the user stops typing
   const debouncedSetFilter = debounce((text) => {
     setFilter(text);
-  }, 250);
+  }, 50);
 
   const onFilterChange = (e) => {
     debouncedSetFilter(e.target.value);

@@ -12,9 +12,8 @@ import debounce from "lodash/debounce";
 import Pagination from "../components/Pagination";
 import ClipfaceLayout from "../components/ClipfaceLayout";
 import CopyClipLink from "../components/CopyClipLink";
+import useLocalSettings from "../localSettings";
 import requireAuth from "../backend/requireAuth";
-
-const CLIPS_PER_PAGE = 20;
 
 const ClearFilterButton = styled.span`
   cursor: pointer;
@@ -54,15 +53,18 @@ const NoVideosPlaceholder = styled.div`
 const IndexPage = ({ videos, title, pagination, authInfo }) => {
   const [filter, setFilter] = useState("");
   const [currentPage, setCurrentPage] = useState(0);
+  const [localSettings, setLocalSettings] = useLocalSettings();
   const filterBox = useRef();
 
+  const { clipsPerPage } = localSettings;
+
   const totalClipCount = videos.length;
-  const pageCount = Math.ceil(totalClipCount / CLIPS_PER_PAGE);
+  const pageCount = Math.ceil(totalClipCount / clipsPerPage);
 
   if (pagination) {
     videos = videos.slice(
-      currentPage * CLIPS_PER_PAGE,
-      currentPage * CLIPS_PER_PAGE + CLIPS_PER_PAGE
+      currentPage * clipsPerPage,
+      currentPage * clipsPerPage + clipsPerPage
     );
   }
 
@@ -92,6 +94,10 @@ const IndexPage = ({ videos, title, pagination, authInfo }) => {
 
   const handleLinkClick = (clipName) => {
     Router.push(`/watch/${clipName}`);
+  };
+
+  const handleChangeClipsPerPage = (newClipsPerPage) => {
+    setLocalSettings({ ...localSettings, clipsPerPage: newClipsPerPage });
   };
 
   /**
@@ -131,12 +137,14 @@ const IndexPage = ({ videos, title, pagination, authInfo }) => {
           </div>
         </div>
 
-        {pagination && pageCount > 1 && (
+        {pagination && (
           <Pagination
             currentPage={currentPage}
             totalPages={pageCount}
             totalClips={totalClipCount}
+            clipsPerPage={clipsPerPage}
             onChangePage={(newPageNumber) => setCurrentPage(newPageNumber)}
+            onChangeClipsPerPage={handleChangeClipsPerPage}
             showLabel
           />
         )}
@@ -194,11 +202,13 @@ const IndexPage = ({ videos, title, pagination, authInfo }) => {
           <NoVideosPlaceholder>No clips here yet</NoVideosPlaceholder>
         )}
 
-        {pagination && pageCount > 1 && (
+        {pagination && (
           <Pagination
             currentPage={currentPage}
             totalPages={pageCount}
             totalClips={totalClipCount}
+            clipsPerPage={clipsPerPage}
+            onChangeClipsPerPage={handleChangeClipsPerPage}
             onChangePage={(newPageNumber) => setCurrentPage(newPageNumber)}
           />
         )}

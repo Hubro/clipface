@@ -35,6 +35,7 @@ const updateSettings = (settings) => {
 const initLocalSettings = () => {
   if (!globalSettings.theaterMode) globalSettings.theaterMode = false;
   if (!globalSettings.videoVolume) globalSettings.videoVolume = 1;
+  if (!globalSettings.clipsPerPage) globalSettings.clipsPerPage = 40;
 
   saveLocalSettings();
 };

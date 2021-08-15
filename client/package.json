@@ -28,5 +28,8 @@
     "build": "next build",
     "start": "next start",
     "gensalt": "node -e \"const bcrypt = require('bcrypt'); console.log(bcrypt.genSaltSync())\""
+  },
+  "devDependencies": {
+    "prettier": "^2.3.2"
   }
 }

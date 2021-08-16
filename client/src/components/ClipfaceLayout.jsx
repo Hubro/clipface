@@ -4,6 +4,9 @@
 
 import { useRouter } from "next/router";
 import styled from "styled-components";
+import getConfig from "next/config";
+
+const { publicRuntimeConfig } = getConfig();
 
 const ApplicationDiv = styled.div`
   padding-top: 50px;
@@ -43,7 +46,9 @@ export function ClipfaceLayout({
             <div className="container">
               <div className="navbar-brand">
                 <a className="navbar-item">
-                  <h1 className="title is-4">Clippy Mc. Clipface</h1>
+                  <h1 className="title is-4">
+                    {publicRuntimeConfig.headerTitle}
+                  </h1>
                 </a>
               </div>
               <div className="navbar-menu">

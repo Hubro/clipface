@@ -7,7 +7,7 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import range from "lodash/range";
 import throttle from "lodash/throttle";
-import { useDetectClickOutside } from "react-detect-click-outside";
+import Popup from "reactjs-popup";
 
 const PaginationBar = styled.div`
   margin: 10px 0px;
@@ -33,11 +33,6 @@ const ClickableTag = styled.span`
 `;
 
 export default function Pagination(props) {
-  const [contextMenuVisible, setContextMenuVisible] = useState(false);
-  const dropdownRef = useDetectClickOutside({
-    onTriggered: () => setContextMenuVisible(false),
-  });
-
   const {
     totalPages,
     currentPage,
@@ -87,73 +82,67 @@ export default function Pagination(props) {
             ))}
 
             <li>
-              <div
-                className={
-                  "dropdown" + (contextMenuVisible ? " is-active" : "")
-                }
-                ref={dropdownRef}
-              >
-                <div className="dropdown-trigger">
-                  <SubmenuButton
-                    aria-haspopup="true"
-                    aria-controls="dropdown-menu3"
-                    onClick={() => setContextMenuVisible(!contextMenuVisible)}
-                  >
+              <Popup
+                trigger={
+                  <SubmenuButton aria-haspopup="true">
                     <span className="icon">
                       <i className="fas fa-cog"></i>
                     </span>
                   </SubmenuButton>
-                </div>
-                <div className="dropdown-menu">
-                  <div className="dropdown-content">
-                    <div className="dropdown-item">Clips per page:</div>
-                    <div className="dropdown-item">
-                      <input
-                        className="input is-small"
-                        type="number"
-                        value={clipsPerPage}
-                        onChange={(event) =>
-                          changeClipsPerPage(Number(event.target.value))
-                        }
-                      />
-                    </div>
-                    <div className="dropdown-item">
-                      <div className="tags" style={{ flexWrap: "nowrap" }}>
-                        <ClickableTag
-                          className="tag is-info"
-                          onClick={() => changeClipsPerPage(20)}
-                        >
-                          20
-                        </ClickableTag>
-                        <ClickableTag
-                          className="tag is-info"
-                          onClick={() => changeClipsPerPage(40)}
-                        >
-                          40
-                        </ClickableTag>
-                        <ClickableTag
-                          className="tag is-primary"
-                          onClick={() => changeClipsPerPage(80)}
-                        >
-                          80
-                        </ClickableTag>
-                        <ClickableTag
-                          className="tag is-warning"
-                          onClick={() => changeClipsPerPage(150)}
-                        >
-                          150
-                        </ClickableTag>
-                        <ClickableTag
-                          className="tag is-danger"
-                          onClick={() => changeClipsPerPage(300)}
-                        >
-                          300
-                        </ClickableTag>
-                      </div>
+                }
+                overlayStyle={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
+                // On screens narrower than 768, show the settings popup as a
+                // modal rather than a dropdown menu
+                modal={typeof window !== "undefined" && window.innerWidth < 768}
+              >
+                <div className="dropdown-content">
+                  <div className="dropdown-item">Clips per page:</div>
+                  <div className="dropdown-item">
+                    <input
+                      className="input is-small"
+                      type="number"
+                      value={clipsPerPage}
+                      onChange={(event) =>
+                        changeClipsPerPage(Number(event.target.value))
+                      }
+                    />
+                  </div>
+                  <div className="dropdown-item">
+                    <div className="tags" style={{ flexWrap: "nowrap" }}>
+                      <ClickableTag
+                        className="tag is-info"
+                        onClick={() => changeClipsPerPage(20)}
+                      >
+                        20
+                      </ClickableTag>
+                      <ClickableTag
+                        className="tag is-info"
+                        onClick={() => changeClipsPerPage(40)}
+                      >
+                        40
+                      </ClickableTag>
+                      <ClickableTag
+                        className="tag is-primary"
+                        onClick={() => changeClipsPerPage(80)}
+                      >
+                        80
+                      </ClickableTag>
+                      <ClickableTag
+                        className="tag is-warning"
+                        onClick={() => changeClipsPerPage(150)}
+                      >
+                        150
+                      </ClickableTag>
+                      <ClickableTag
+                        className="tag is-danger"
+                        onClick={() => changeClipsPerPage(300)}
+                      >
+                        300
+                      </ClickableTag>
                     </div>
                   </div>
                 </div>
-              </div>
+              </Popup>
             </li>
           </ul>
 

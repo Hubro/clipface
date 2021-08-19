@@ -2,23 +2,15 @@
  * Pagination component for the clip list page
  */
 
-import { useState } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import range from "lodash/range";
-import throttle from "lodash/throttle";
 import Popup from "reactjs-popup";
 
 const PaginationBar = styled.div`
   margin: 10px 0px;
   margin-bottom: 10px;
   border-radius: 2px;
-`;
-
-const PageLabel = styled.span`
-  margin-left: 0.25rem;
-  font-size: 14px;
-  font-weight: bold;
 `;
 
 const SubmenuButton = styled.div`
@@ -36,7 +28,6 @@ export default function Pagination(props) {
   const {
     totalPages,
     currentPage,
-    totalClips,
     clipsPerPage,
     onChangePage,
     onChangeClipsPerPage,
@@ -148,7 +139,7 @@ export default function Pagination(props) {
 
           <a
             className="pagination-previous"
-            onClick={(e) => {
+            onClick={() => {
               if (onFirstPage) return;
 
               onChangePage(currentPage - 1);

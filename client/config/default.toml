@@ -8,3 +8,4 @@ clips_path = "/clips"
 secure_cookies = true
 # clips_page_title =
 header_title = "Clippy Mc. Clipface"
+pagination = true

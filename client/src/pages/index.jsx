@@ -9,8 +9,10 @@ import TimeAgo from "react-timeago";
 import prettyBytes from "pretty-bytes";
 import debounce from "lodash/debounce";
 
+import Pagination from "../components/Pagination";
 import ClipfaceLayout from "../components/ClipfaceLayout";
 import CopyClipLink from "../components/CopyClipLink";
+import useLocalSettings from "../localSettings";
 import requireAuth from "../backend/requireAuth";
 
 const ClearFilterButton = styled.span`
@@ -48,20 +50,46 @@ const NoVideosPlaceholder = styled.div`
   padding: 50px;
 `;
 
-const IndexPage = ({ videos, title, authInfo }) => {
+const IndexPage = ({ videos, title, pagination, authInfo }) => {
   const [filter, setFilter] = useState("");
+  const [currentPage, setCurrentPage] = useState(0);
+  const [localSettings, setLocalSettings] = useLocalSettings();
   const filterBox = useRef();
 
   // Focus filter box on load
   useEffect(() => {
     filterBox.current.focus();
-  });
+  }, []);
+
+  const { clipsPerPage } = localSettings;
+
+  /*
+   * Filter clips
+   */
+
+  if (filter) {
+    videos = videos.filter((clip) => clip.name.toLowerCase().includes(filter));
+  }
+
+  /*
+   * Paginate clips
+   */
+
+  const totalClipCount = videos.length;
+  const pageCount = Math.ceil(totalClipCount / clipsPerPage);
+
+  if (pagination) {
+    videos = videos.slice(
+      currentPage * clipsPerPage,
+      currentPage * clipsPerPage + clipsPerPage
+    );
+  }
 
   // Setting the filter text for every keypress is terrible for performance, so
-  // we only do it 250ms after the user stops typing
+  // we only do it 50ms after the user stops typing
   const debouncedSetFilter = debounce((text) => {
     setFilter(text);
-  }, 250);
+  }, 50);
 
   const onFilterChange = (e) => {
     debouncedSetFilter(e.target.value);
@@ -76,18 +104,8 @@ const IndexPage = ({ videos, title, authInfo }) => {
     Router.push(`/watch/${clipName}`);
   };
 
-  /**
-   * Returns true if the filter matches the input clip
-   *
-   * Always returns true if no filter is set.
-   *
-   * @param {string} clipName
-   * @returns {boolean}
-   */
-  const filterMatch = (clipName) => {
-    if (filter == "") return true;
-
-    return clipName.toLowerCase().includes(filter);
+  const handleChangeClipsPerPage = (newClipsPerPage) => {
+    setLocalSettings({ ...localSettings, clipsPerPage: newClipsPerPage });
   };
 
   return (
@@ -113,57 +131,73 @@ const IndexPage = ({ videos, title, authInfo }) => {
           </div>
         </div>
 
+        {pagination && (
+          <Pagination
+            currentPage={currentPage}
+            totalPages={pageCount}
+            totalClips={totalClipCount}
+            clipsPerPage={clipsPerPage}
+            onChangePage={(newPageNumber) => setCurrentPage(newPageNumber)}
+            onChangeClipsPerPage={handleChangeClipsPerPage}
+            showLabel
+          />
+        )}
+
         <table
           className="table is-fullwidth is-bordered"
           style={{ marginBottom: 0 }} // Remove bottom margin added by Bulma
         >
           <thead>
             <tr>
-              <th>Saved</th>
-              <th>Clip size</th>
+              <th width="150px">Saved</th>
+              <th width="100px">Clip size</th>
               <th>Clip name</th>
             </tr>
           </thead>
 
           <tbody>
-            {videos.map(
-              (clip) =>
-                filterMatch(clip.name) && (
-                  <LinkRow
-                    key={clip.name}
-                    onClick={() => {
-                      handleLinkClick(clip.name);
-                    }}
-                  >
-                    <td>
-                      <TimeAgo date={clip.saved} />
-                    </td>
-                    <td>{prettyBytes(clip.size)}</td>
-                    <td>
-                      {clip.title || clip.name}
+            {videos.map((clip) => (
+              <LinkRow
+                key={clip.name}
+                onClick={() => {
+                  handleLinkClick(clip.name);
+                }}
+              >
+                <td>
+                  <TimeAgo date={clip.saved} />
+                </td>
+                <td>{prettyBytes(clip.size)}</td>
+                <td>
+                  {clip.title || clip.name}
 
-                      <RowButtons>
-                        <CopyClipLink clipName={clip.name} noText />
+                  <RowButtons>
+                    <CopyClipLink clipName={clip.name} noText />
 
-                        {authInfo.status == "AUTHENTICATED" && (
-                          // There's no point in showing the "Copy public link"
-                          // button if Clipface is not password protected
-                          <CopyClipLink
-                            clipName={clip.name}
-                            noText
-                            publicLink
-                          />
-                        )}
-                      </RowButtons>
-                    </td>
-                  </LinkRow>
-                )
-            )}
+                    {authInfo.status == "AUTHENTICATED" && (
+                      // There's no point in showing the "Copy public link"
+                      // button if Clipface is not password protected
+                      <CopyClipLink clipName={clip.name} noText publicLink />
+                    )}
+                  </RowButtons>
+                </td>
+              </LinkRow>
+            ))}
           </tbody>
         </table>
 
         {videos.length == 0 && (
           <NoVideosPlaceholder>No clips here yet</NoVideosPlaceholder>
+        )}
+
+        {pagination && (
+          <Pagination
+            currentPage={currentPage}
+            totalPages={pageCount}
+            totalClips={totalClipCount}
+            clipsPerPage={clipsPerPage}
+            onChangeClipsPerPage={handleChangeClipsPerPage}
+            onChangePage={(newPageNumber) => setCurrentPage(newPageNumber)}
+          />
         )}
       </div>
     </ClipfaceLayout>
@@ -186,6 +220,7 @@ export const getServerSideProps = requireAuth(async (context) => {
   return {
     props: {
       videos,
+      pagination: config.get("pagination"),
       title: config.has("clips_page_title")
         ? config.get("clips_page_title")
         : null,

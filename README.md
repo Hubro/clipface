@@ -71,15 +71,23 @@ List of config parameters:
   that Clipface should host. This defaults to `"/clips"`, which is a
   convenient value for Docker images.
 
-  **Default value**: `"/clips"`  
+  **Default value**: `"/clips"`
   **Environment variable**: `CLIPFACE_CLIPS_PATH`
+
+- `pagination` - If true, the clip list will be split into pages. This is
+  highly recommended if your clip count is in the hundreds, as it will hugely
+  improve the responsiveness of the site. The end user can choose the amount of
+  clips displayed per page.
+
+  **Default value**: `true`
+  **Environment variable**: `CLIPFACE_PAGINATION`
 
 - `user_password` - A password used to protect this Clipface instance. If
   set, users must input this password before they can watch any clips or see
   the list of clips. By default this parameter is not set, which will allow
   anybody to browse and watch all your clips.
 
-  **Default value**: *(unset)*  
+  **Default value**: *(unset)*
   **Environment variable**: `CLIPFACE_USER_PASSWORD`
 
 - `secure_cookies` - If set to true (which is the default value), the
@@ -87,15 +95,20 @@ List of config parameters:
   cookie will only be included when using SSL (HTTPS). If you are not using
   SSL, you need to set this option to false, or authentication won't work.
 
-  **Default value**: `true`  
+  **Default value**: `true`
   **Environment variable**: `CLIPFACE_SECURE_COOKIES`
+
+- `header_title` - Title displayed in the header on all pages
+
+  **Default value**: `"Clippy Mc. Clipface"`
+  **Environment variable**: `CLIPFACE_HEADER_TITLE`
 
 - `clips_page_title` - Title displayed on the clip list page
 
   If not set (which is the default), no title will be displayed and the
   header will be significantly smaller.
 
-  **Default value**: *(unset)*  
+  **Default value**: *(unset)*
   **Environment variable**: `CLIPFACE_CLIPS_PAGE_TITLE`
 
 ## NGINX reverse proxy with SSL

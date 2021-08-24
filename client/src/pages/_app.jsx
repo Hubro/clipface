@@ -3,11 +3,31 @@
  */
 
 import * as cookie from "cookie";
+import { createGlobalStyle } from "styled-components";
 
 import { setLocalSettings } from "../localSettings";
 
+const GlobalStyle = createGlobalStyle`
+  html {
+    font-family: "Roboto", sans-serif;
+  }
+
+  body {
+    position: relative;
+    font-family: inherit;
+    min-height: 100vh;
+    box-sizing: border-box;
+    padding-bottom: 33px;
+  }
+`;
+
 function MyApp({ Component, pageProps }) {
-  return <Component {...pageProps} />;
+  return (
+    <>
+      <GlobalStyle />
+      <Component {...pageProps} />
+    </>
+  );
 }
 
 // This applies local settings when server side rendering if provided by the

@@ -14,6 +14,40 @@ const ApplicationDiv = styled.div`
   position: static;
 `;
 
+const Footer = styled.footer`
+  position: absolute;
+  right: 0px;
+  bottom: 0px;
+  left: 0px;
+  height: 33px;
+
+  display: flex;
+  align-items: center;
+
+  background-color: rgba(0, 0, 0, 0.07);
+  color: rgba(0, 0, 0, 0.7);
+  text-align: center;
+  font-size: 0.8rem;
+
+  i {
+    position: relative;
+    top: 1px;
+    font-size: 1rem;
+    margin-right: 2px;
+  }
+
+  a,
+  a:hover,
+  a:visited {
+    padding: 6px;
+    color: rgba(0, 0, 0, 0.75);
+  }
+
+  .dot {
+    margin: 0px 4px;
+  }
+`;
+
 export function ClipfaceLayout({
   children,
   authInfo = { status: "NOT_AUTHENTICATED" },
@@ -78,6 +112,14 @@ export function ClipfaceLayout({
       <ApplicationDiv className={contentClassNames.join(" ")}>
         {children}
       </ApplicationDiv>
+
+      <Footer>
+        <div className="container">
+          <a href="https://github.com/Hubro/clipface" target="_blank">
+            <i class="fab fa-github"></i> Clipface
+          </a>
+        </div>
+      </Footer>
     </>
   );
 }

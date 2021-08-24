@@ -8,6 +8,13 @@ import getConfig from "next/config";
 
 const { publicRuntimeConfig } = getConfig();
 
+const Header = styled.header`
+  background-image: url(/img/header-background.jpg);
+  background-size: 1920px auto;
+  background-position: center center;
+  background-repeat: no-repeat;
+`;
+
 const ApplicationDiv = styled.div`
   padding-top: 50px;
   padding-bottom: 50px;
@@ -75,7 +82,7 @@ export function ClipfaceLayout({
   return (
     <>
       <section className="hero is-dark">
-        <div className="hero-head">
+        <Header className="hero-head">
           <nav className="navbar">
             <div className="container">
               <div className="navbar-brand">
@@ -96,7 +103,7 @@ export function ClipfaceLayout({
               </div>
             </div>
           </nav>
-        </div>
+        </Header>
 
         {pageTitle && (
           <div className="hero-body">

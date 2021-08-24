@@ -216,7 +216,9 @@ specific clip can be invalidated by renaming the clip.
 
 ## Roadmap
 
-See [Clipface v2.0 tasks](https://github.com/Hubro/clipface/projects/1).
+See the [Milestones][milestones] on GitHub for planned features.
+
+[milestones]: https://github.com/Hubro/clipface/milestones?direction=asc&sort=title&state=open
 
 ## Troubleshooting
 

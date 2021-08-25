@@ -17,6 +17,7 @@ cp package.json     $TMPDIR/app
 cp yarn.lock        $TMPDIR/app
 cp next.config.js   $TMPDIR/app
 cp -r .next         $TMPDIR/app
+cp -r public/       $TMPDIR/app
 cp -r config        $TMPDIR
 
 rm -f $TMPDIR/config/local.toml | true   # Don't deploy the local config file

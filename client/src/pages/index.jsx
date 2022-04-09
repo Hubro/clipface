@@ -14,6 +14,7 @@ import ClipfaceLayout from "../components/ClipfaceLayout";
 import CopyClipLink from "../components/CopyClipLink";
 import useLocalSettings from "../localSettings";
 import requireAuth from "../backend/requireAuth";
+import Container from "../components/Container";
 
 const ClearFilterButton = styled.span`
   cursor: pointer;
@@ -110,7 +111,7 @@ const IndexPage = ({ videos, title, pagination, authInfo }) => {
 
   return (
     <ClipfaceLayout authInfo={authInfo} pageName="index" pageTitle={title}>
-      <div>
+      <Container padded>
         <div className="field">
           <label className="label">Filter</label>
 
@@ -199,7 +200,7 @@ const IndexPage = ({ videos, title, pagination, authInfo }) => {
             onChangePage={(newPageNumber) => setCurrentPage(newPageNumber)}
           />
         )}
-      </div>
+      </Container>
     </ClipfaceLayout>
   );
 };

@@ -15,27 +15,28 @@ import CopyClipLink from "../../components/CopyClipLink";
 import useLocalSettings from "../../localSettings";
 import requireAuth from "../../backend/requireAuth";
 import { getPublicURL } from "../../util";
+import Container from "../../components/Container";
 
 const ButtonRow = styled.div`
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: end;
+  align-items: center;
+  gap: 5px;
   padding-bottom: 10px;
-`;
-
-const ButtonRowSpacer = styled.div`
-  width: 1px;
-  margin-left: auto;
-`;
-
-const ButtonRowSeparator = styled.div`
-  width: 5px;
 `;
 
 const BackLink = styled.a`
   display: inline-block;
+  margin-right: auto;
+
+  @media (max-width: 640px) {
+    width: 100%;
+  }
 `;
 
-const SingleClipAuthNotice = styled.div`
+const SingleClipAuthNotice = styled.p`
   opacity: 0.5;
 `;
 
@@ -48,10 +49,7 @@ const InlineIcon = styled.i`
 // The height of the video container when in theatre mode
 const videoContainerTheatreHeight = "calc(100vh - 136px - 150px)";
 
-const VideoContainer = styled.div`
-  margin: 0px auto;
-  max-width: 1344px;
-
+const VideoContainer = styled(Container)`
   &.theater-mode {
     background-color: black;
     position: absolute;
@@ -150,6 +148,8 @@ const WatchPage = ({ clipMeta, authInfo, currentURL }) => {
     ref: videoRef,
   };
 
+  // authInfo.status = 'AUTHENTICATED';
+
   return (
     <>
       <Head>
@@ -171,49 +171,44 @@ const WatchPage = ({ clipMeta, authInfo, currentURL }) => {
       </Head>
 
       <ClipfaceLayout authInfo={authInfo} pageName="watch">
-        <ButtonRow>
-          {/* Only show "Back to clips" button to authenticated users */}
-          {authInfo.status == "AUTHENTICATED" && (
-            <BackLink onClick={handleBackClick}>
-              <span className="icon">
-                <i className="fas fa-arrow-alt-circle-left"></i>
+        <Container padded>
+          <ButtonRow>
+            {/* Only show "Back to clips" button to authenticated users */}
+            {authInfo.status == "AUTHENTICATED" && (
+              <BackLink onClick={handleBackClick}>
+                <span className="icon">
+                  <i className="fas fa-arrow-alt-circle-left"></i>
+                </span>
+                Back to clips
+              </BackLink>
+            )}
+
+            {authInfo.status == "SINGLE_PAGE_AUTHENTICATED" && (
+              <SingleClipAuthNotice>
+                <InlineIcon className="fas fa-info-circle" />
+                You are using a public link for this clip
+              </SingleClipAuthNotice>
+            )}
+
+            <button
+              className={"button is-small " + (theaterMode ? "is-info" : "")}
+              onClick={toggleTheaterMode}
+            >
+              <span className="icon is-small">
+                <i className="fas fa-film"></i>
               </span>
-              Back to clips
-            </BackLink>
-          )}
+              <span>Theater mode</span>
+            </button>
 
-          {authInfo.status == "SINGLE_PAGE_AUTHENTICATED" && (
-            <SingleClipAuthNotice>
-              <InlineIcon className="fas fa-info-circle" />
-              You are using a public link for this clip
-            </SingleClipAuthNotice>
-          )}
-
-          <ButtonRowSpacer />
-
-          <button
-            className={"button is-small " + (theaterMode ? "is-info" : "")}
-            onClick={toggleTheaterMode}
-          >
-            <span className="icon is-small">
-              <i className="fas fa-film"></i>
-            </span>
-            <span>Theater mode</span>
-          </button>
-
-          {/* Only show link copying buttons to authenticated users */}
-          {authInfo.status == "AUTHENTICATED" && (
-            <>
-              <ButtonRowSeparator />
-
-              <CopyClipLink clipName={clipName} />
-
-              <ButtonRowSeparator />
-
-              <CopyClipLink clipName={clipName} publicLink />
-            </>
-          )}
-        </ButtonRow>
+            {/* Only show link copying buttons to authenticated users */}
+            {authInfo.status == "AUTHENTICATED" && (
+              <>
+                <CopyClipLink clipName={clipName} />
+                <CopyClipLink clipName={clipName} publicLink />
+              </>
+            )}
+          </ButtonRow>
+        </Container>
 
         <VideoContainer className={theaterMode ? "theater-mode" : ""}>
           <video {...videoProps} />
@@ -221,24 +216,26 @@ const WatchPage = ({ clipMeta, authInfo, currentURL }) => {
 
         {theaterMode && <VideoSpacer />}
 
-        <VideoInfo>
-          <h1 className="title is-4">{clipMeta.title || clipMeta.name}</h1>
-          <h2 className="subtitle is-6">
-            Saved <TimeAgo date={clipMeta.saved} />
-            <span style={{ margin: "0px 10px" }}>•</span>
-            {prettyBytes(clipMeta.size)}
-          </h2>
+        <Container padded>
+          <VideoInfo>
+            <h1 className="title is-4">{clipMeta.title || clipMeta.name}</h1>
+            <h2 className="subtitle is-6">
+              Saved <TimeAgo date={clipMeta.saved} />
+              <span style={{ margin: "0px 10px" }}>•</span>
+              {prettyBytes(clipMeta.size)}
+            </h2>
 
-          {clipMeta.title && <em>Filename: {clipMeta.name}</em>}
+            {clipMeta.title && <em>Filename: {clipMeta.name}</em>}
 
-          <hr />
+            <hr />
 
-          {clipMeta.description && (
-            <VideoDescription className="content">
-              <ReactMarkdown>{clipMeta.description}</ReactMarkdown>
-            </VideoDescription>
-          )}
-        </VideoInfo>
+            {clipMeta.description && (
+              <VideoDescription className="content">
+                <ReactMarkdown>{clipMeta.description}</ReactMarkdown>
+              </VideoDescription>
+            )}
+          </VideoInfo>
+        </Container>
       </ClipfaceLayout>
     </>
   );

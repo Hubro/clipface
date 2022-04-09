@@ -5,6 +5,7 @@
 import { useRouter } from "next/router";
 import styled from "styled-components";
 import getConfig from "next/config";
+import Container from "./Container";
 
 const { publicRuntimeConfig } = getConfig();
 
@@ -15,10 +16,26 @@ const Header = styled.header`
   background-repeat: no-repeat;
 `;
 
+const NavbarContainer = styled(Container)`
+  min-height: 3.25rem;
+  display: flex;
+  align-items: center;
+  width: 100%;
+`;
+
+const NavbarMenu = styled.div`
+  flex: 1;
+  display: flex;
+  justify-content: end;
+`
+
 const ApplicationDiv = styled.div`
-  padding-top: 50px;
-  padding-bottom: 50px;
+  padding: 50px 0;
   position: static;
+
+  @media (max-width: 1344px) {
+    padding: 20px 0;
+  }
 `;
 
 const Footer = styled.footer`
@@ -63,11 +80,7 @@ export function ClipfaceLayout({
   pageSubtitle = null,
 }) {
   const router = useRouter();
-  const contentClassNames = ["container"];
-
-  if (pageName) {
-    contentClassNames.push(`page-${pageName}`);
-  }
+  const contentClassName = pageName ? `page-${pageName}` : '';
 
   const onSignOut = () => {
     logout().then((ok) => {
@@ -83,25 +96,21 @@ export function ClipfaceLayout({
     <>
       <section className="hero is-dark">
         <Header className="hero-head">
-          <nav className="navbar">
-            <div className="container">
-              <div className="navbar-brand">
-                <a className="navbar-item">
-                  <h1 className="title is-4">
-                    {publicRuntimeConfig.headerTitle}
-                  </h1>
-                </a>
-              </div>
-              <div className="navbar-menu">
-                <div className="navbar-end">
-                  {authInfo.status == "AUTHENTICATED" && (
-                    <a className="navbar-item" onClick={onSignOut}>
-                      Log out
-                    </a>
-                  )}
-                </div>
-              </div>
-            </div>
+          <nav>
+            <NavbarContainer padded>
+              <a href="/">
+                <h1 className="title is-4">
+                  {publicRuntimeConfig.headerTitle}
+                </h1>
+              </a>
+              <NavbarMenu>
+                {authInfo.status == "AUTHENTICATED" && (
+                  <a onClick={onSignOut}>
+                    Log out
+                  </a>
+                )}
+              </NavbarMenu>
+            </NavbarContainer>
           </nav>
         </Header>
 
@@ -116,7 +125,7 @@ export function ClipfaceLayout({
         )}
       </section>
 
-      <ApplicationDiv className={contentClassNames.join(" ")}>
+      <ApplicationDiv className={contentClassName}>
         {children}
       </ApplicationDiv>
 

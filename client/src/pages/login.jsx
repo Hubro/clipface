@@ -8,6 +8,7 @@ import styled from "styled-components";
 import config from "config";
 
 import ClipfaceLayout from "../components/ClipfaceLayout";
+import Container from "../components/Container";
 
 const LoginBox = styled.div`
   margin: 0px auto;
@@ -66,52 +67,54 @@ const LoginPage = ({ authEnabled }) => {
 
   return (
     <ClipfaceLayout pageName="login">
-      <LoginBox className="box">
-        <p className="has-text-centered has-text-weight-bold">
-          This page is password protected
-        </p>
+      <Container>
+        <LoginBox className="box">
+          <p className="has-text-centered has-text-weight-bold">
+            This page is password protected
+          </p>
 
-        <Form onSubmit={onSubmit}>
-          <div className="field">
-            <p className="control has-icons-left">
-              {/* The username field is not used for anything but Chrome
-               * complains if it's missing */}
-              <input
-                name="username"
-                value="default"
-                autoComplete="username"
-                hidden={true}
-                readOnly={true}
-              />
+          <Form onSubmit={onSubmit}>
+            <div className="field">
+              <p className="control has-icons-left">
+                {/* The username field is not used for anything but Chrome
+                * complains if it's missing */}
+                <input
+                  name="username"
+                  value="default"
+                  autoComplete="username"
+                  hidden={true}
+                  readOnly={true}
+                />
 
-              <input
-                ref={passwordFieldRef}
-                className={"input" + (error ? " is-danger" : "")}
-                type="password"
-                placeholder="Password"
-                autoComplete="current-password"
-                disabled={isLoading}
-                value={password}
-                onChange={onPasswordChange}
-              />
+                <input
+                  ref={passwordFieldRef}
+                  className={"input" + (error ? " is-danger" : "")}
+                  type="password"
+                  placeholder="Password"
+                  autoComplete="current-password"
+                  disabled={isLoading}
+                  value={password}
+                  onChange={onPasswordChange}
+                />
 
-              {error && <p className="has-text-danger">{error}</p>}
+                {error && <p className="has-text-danger">{error}</p>}
 
-              <span className="icon is-small is-left">
-                <i className="fas fa-lock"></i>
-              </span>
-            </p>
-          </div>
-          <div className="field">
-            <p className="control">
-              <LoginButton className="button is-primary" disabled={isLoading}>
-                {isLoading && <i className="fa fa-cog fa-spin" />}
-                {!isLoading && "Login"}
-              </LoginButton>
-            </p>
-          </div>
-        </Form>
-      </LoginBox>
+                <span className="icon is-small is-left">
+                  <i className="fas fa-lock"></i>
+                </span>
+              </p>
+            </div>
+            <div className="field">
+              <p className="control">
+                <LoginButton className="button is-primary" disabled={isLoading}>
+                  {isLoading && <i className="fa fa-cog fa-spin" />}
+                  {!isLoading && "Login"}
+                </LoginButton>
+              </p>
+            </div>
+          </Form>
+        </LoginBox>
+      </Container>
     </ClipfaceLayout>
   );
 };

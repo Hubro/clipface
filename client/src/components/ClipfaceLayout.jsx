@@ -97,7 +97,7 @@ export function ClipfaceLayout({
       <section className="hero is-dark">
         <Header className="hero-head">
           <nav>
-            <NavbarContainer padded>
+            <NavbarContainer>
               <a href="/">
                 <h1 className="title is-4">
                   {publicRuntimeConfig.headerTitle}

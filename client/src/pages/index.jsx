@@ -111,7 +111,7 @@ const IndexPage = ({ videos, title, pagination, authInfo }) => {
 
   return (
     <ClipfaceLayout authInfo={authInfo} pageName="index" pageTitle={title}>
-      <Container padded>
+      <Container>
         <div className="field">
           <label className="label">Filter</label>
 

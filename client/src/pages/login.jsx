@@ -67,7 +67,7 @@ const LoginPage = ({ authEnabled }) => {
 
   return (
     <ClipfaceLayout pageName="login">
-      <Container padded>
+      <Container>
         <LoginBox className="box">
           <p className="has-text-centered has-text-weight-bold">
             This page is password protected

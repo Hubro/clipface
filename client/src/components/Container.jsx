@@ -8,13 +8,13 @@ const width = 1344;
 const padding = 12;
 
 const Container = styled.div`
-  max-width: ${props => props.padded ? width + padding * 2 : width}px;
+  max-width: ${props => props.noPadding ? width : width + padding * 2}px;
   margin: 0 auto;
 
-  ${props => props.padded ? `
+  ${props => props.noPadding ? '' : `
     padding-left: ${padding}px;
     padding-right: ${padding}px;
-  ` : ''}
+  `}
 `;
 
 export default Container;

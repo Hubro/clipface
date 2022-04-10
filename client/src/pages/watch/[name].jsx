@@ -49,7 +49,7 @@ const InlineIcon = styled.i`
 // The height of the video container when in theatre mode
 const videoContainerTheatreHeight = "calc(100vh - 136px - 150px)";
 
-const VideoContainer = styled(Container)`
+const VideoContainer = styled(Container).attrs({ noPadding: true })`
   &.theater-mode {
     background-color: black;
     position: absolute;
@@ -148,8 +148,6 @@ const WatchPage = ({ clipMeta, authInfo, currentURL }) => {
     ref: videoRef,
   };
 
-  // authInfo.status = 'AUTHENTICATED';
-
   return (
     <>
       <Head>
@@ -171,7 +169,7 @@ const WatchPage = ({ clipMeta, authInfo, currentURL }) => {
       </Head>
 
       <ClipfaceLayout authInfo={authInfo} pageName="watch">
-        <Container padded>
+        <Container>
           <ButtonRow>
             {/* Only show "Back to clips" button to authenticated users */}
             {authInfo.status == "AUTHENTICATED" && (
@@ -216,7 +214,7 @@ const WatchPage = ({ clipMeta, authInfo, currentURL }) => {
 
         {theaterMode && <VideoSpacer />}
 
-        <Container padded>
+        <Container>
           <VideoInfo>
             <h1 className="title is-4">{clipMeta.title || clipMeta.name}</h1>
             <h2 className="subtitle is-6">

@@ -85,7 +85,8 @@ export default function Pagination(props) {
                 // On screens narrower than 768, show the settings popup as a
                 // modal rather than a dropdown menu
                 modal={typeof window !== "undefined" && window.innerWidth < 768}
-                position="bottom left"
+                repositionOnResize
+                keepTooltipInside="body"
               >
                 <div className="dropdown-content">
                   <div className="dropdown-item">Clips per page:</div>
